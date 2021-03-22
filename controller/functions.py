@@ -2,7 +2,7 @@
 # coding: utf-8
 
 import sys
-sys.path.append("../classe")
+sys.path.append("../model")
 
 from tinydb import TinyDB, Query
 from classes import Player
