@@ -2,16 +2,14 @@
 # coding: utf-8
 
 import sys
-sys.path.append("./vue")
-sys.path.append("./controleurs")
-sys.path.append("./classe")
+sys.path.append("view")
+sys.path.append("controller")
+sys.path.append("model")
 
-from functions import conversion
-from vue import menu, player_menu
+from view import menu, player_menu
 
 
 def main():
-    conversion()
     menu()
 
 
