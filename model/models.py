@@ -67,19 +67,48 @@ class Tournament:
     def __repr__ (self):
         return (self.name)
 
-    def new_round (self):
-        if len(self.rounds) == 0:
+    def new_round (self, new):
+        self.rounds.append(new)
 
 
 class Round:
 
-    def __init__ (self, tournament):
+    def __init__ (self, tournament, match1=[], match2=[], match3=[], match4=[]):
         self.tournament = tournament
-        self.match1 = []
-        self.match2 = []
-        self.match3 = []
-        self.match4 = []
-
+        self.match1 = match1
+        self.match2 = match2
+        self.match3 = match3
+        self.match4 = match4
 
     def __repr__ (self):
         return(str(self.match1) + str(self.match2) + str(self.match3) + str(self.match4))
+
+
+    def opponent(self, player1, player2):
+        reponse = False
+        if self.match1[0][0] == player1.id_json or self.match1[1][0] == player1.id_json:
+            if self.match1[0][0] == player2.id_json or self.match1[1][0] == player2.id_json:
+                reponse = True
+        elif self.match2[0][0] == player1.id_json or self.match2[1][0] == player1.id_json:
+            if self.match2[0][0] == player2.id_json or self.match2[1][0] == player2.id_json:
+                reponse = True
+        elif self.match3[0][0] == player1.id_json or self.match3[1][0] == player1.id_json:
+            if self.match3[0][0] == player2.id_json or self.match3[1][0] == player2.id_json:
+                reponse = True
+        elif self.match4[0][0] == player1.id_json or self.match4[1][0] == player1.id_json:
+            if self.match4[0][0] == player2.id_json or self.match4[1][0] == player2.id_json:
+                reponse = True
+        return reponse
+
+"""class Match:
+
+    def __init__(self, (first_player, first_player_score), (second_player, second_player_score), resolved=False):
+        self.first_player = first_player
+        self.first_player_score = first_player_score
+        self.second_player = second_player
+        self.second_player_score = second_player_score
+        self.resolved = resolved
+
+    def resolve(self):
+        pass
+"""
