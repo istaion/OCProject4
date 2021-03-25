@@ -74,4 +74,4 @@ def tournament_menu():
         tournament_menu()
     elif reponse == "2":
         print(view_tournament())
-        new_round(1)
+        new_round(2)

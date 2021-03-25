@@ -3,7 +3,7 @@
 
 class Player:
 
-    def __init__ (self, first_name, last_name, birth_date, gender, ranking, id_json):
+    def __init__(self, first_name, last_name, birth_date, gender, ranking, id_json):
         self.first_name = first_name
         self.last_name = last_name
         self.birth_date = birth_date
@@ -11,40 +11,40 @@ class Player:
         self.ranking = ranking
         self.id_json = id_json
 
-    def __repr__ (self):
-        return (self.first_name + " " + self.last_name)
+    def __repr__(self):
+        return self.first_name + " " + self.last_name
 
-    def __lt__ (self, other):
+    def __lt__(self, other):
         if self.ranking < other.ranking:
             return True
         else:
             return False
 
-    def __le__ (self, other):
+    def __le__(self, other):
         if self.ranking <= other.ranking:
             return True
         else:
             return False
 
-    def __eq__ (self, other):
+    def __eq__(self, other):
         if self.ranking == other.ranking:
             return True
         else:
             return False
 
-    def __ne__ (self, other):
+    def __ne__(self, other):
         if self.ranking != other.ranking:
             return True
         else:
             return False
 
-    def __gt__ (self, other):
+    def __gt__(self, other):
         if self.ranking > other.ranking:
             return True
         else:
             return False
 
-    def __ge__ (self, other):
+    def __ge__(self, other):
         if self.ranking >= other.ranking:
             return True
         else:
@@ -53,7 +53,7 @@ class Player:
 
 class Tournament:
 
-    def __init__ (self, name, place, date, players, rounds, time_control, description, nb_round=4, finish=False):
+    def __init__(self, name, place, date, players, rounds, time_control, description, nb_round=4, finish=False):
         self.name = name
         self.place = place
         self.date = date
@@ -64,8 +64,8 @@ class Tournament:
         self.nb_round = nb_round
         self.finish = finish
 
-    def __repr__ (self):
-        return (self.name)
+    def __repr__(self):
+        return self.name
 
     def new_round (self, new):
         self.rounds.append(new)
@@ -73,16 +73,15 @@ class Tournament:
 
 class Round:
 
-    def __init__ (self, tournament, match1=[], match2=[], match3=[], match4=[]):
+    def __init__(self, tournament, match1=[], match2=[], match3=[], match4=[]):
         self.tournament = tournament
         self.match1 = match1
         self.match2 = match2
         self.match3 = match3
         self.match4 = match4
 
-    def __repr__ (self):
-        return(str(self.match1) + str(self.match2) + str(self.match3) + str(self.match4))
-
+    def __repr__(self):
+        return str(self.match1) + str(self.match2) + str(self.match3) + str(self.match4)
 
     def opponent(self, player1, player2):
         reponse = False
