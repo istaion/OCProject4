@@ -266,7 +266,7 @@ def new_round(i):
         tournament.rounds.append(turn)
         tournament_serialize(tournament)
     elif id_round <= tournament.nb_round:
-        player_list = tournament.players
+        player_list = list(tournament.players)
         player_list.sort(key=lambda m: m[0])  # On commence par trier selon le classement
         player_list.sort(reverse=True, key=lambda m: m[1])  # Puis selon le score
         match = [[], [], [], []]  # list wish contain 4 matchs
@@ -308,6 +308,8 @@ def continue_tournament(i):
             turn = tournament.rounds[-1]
             if turn.status:
                 new_round(i)
+                tournament_deserialize()
+                tournament = globals()["tournament" + str(i)]
         turn = tournament.rounds[-1]
         res = ""
         for j, item in enumerate(turn.match_list()):
@@ -332,10 +334,10 @@ def resolve_match(i,j,k):
         else:
             if indice == 3:
                 turn.status = True
+                tournament.update_score()
                 res += "Ce tour est fini \n"
                 if tournament.nb_round == tournament.active_round():
                     tournament.finish = True
                     res += "Fin du tournoi"
-    tournament.update_score()
     tournament_serialize(tournament)
     return res
