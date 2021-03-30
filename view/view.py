@@ -5,7 +5,7 @@ import sys
 
 sys.path.extend(["../controller"])
 
-from functions import add_player, view_player, change_player, change_ranking, add_tournament, view_tournament, new_round
+from functions import *
 
 
 def menu():
@@ -74,4 +74,10 @@ def tournament_menu():
         tournament_menu()
     elif reponse == "2":
         print(view_tournament())
-        new_round(2)
+        i = input("Quel tournoi voulez vous continuer ? ")
+        print(continue_tournament(i))
+        j = input("Saisissez le numéro du match à résoudre :")
+        k = input("Qui à gagné ? Taper 1 pour le premier joueur, 2 pour le deuxième, 3 pour ex aequo : ")
+        print(resolve_match(i,j,k))
+        tournament_menu()
+
