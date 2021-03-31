@@ -5,10 +5,8 @@ import sys
 
 sys.path.append("../model")
 
-
 from tinydb import TinyDB, Query
 from models import Player, Tournament, Round, Match
-
 
 
 # Conversion between data base and models
@@ -37,13 +35,34 @@ def player_serialize(player):
                           "sexe": player.gender, "classement": player.ranking}, doc_ids=[player.id_json])
 
 
+def tournament_deserialize():
+    """
+    Function to put all tournaments of the db.table in globals variables
+    :return:
+    """
+    player_deserialize()
+    db = TinyDB("db.json")
+    tournament_table = db.table("tournaments")
+    for item in tournament_table:
+        players = []
+        for player in item["players"]:  # to convert id's player in player object
+            players.append((call_player(player[0]), player[1]))
+        globals()["tournament" + str(item.doc_id)] = Tournament(item["name"], item["place"], item["date"], players,
+                                                                item["time_control"], item["description"],
+                                                                item["nb_round"], item["finish"])
+        round_deserialize(globals()["tournament" + str(item.doc_id)])
+        globals()["tournament" + str(item.doc_id)].rounds = []
+        for i in range(item["round"]):  # to add rounds in the tournament list
+            globals()["tournament" + str(item.doc_id)].rounds.append(globals()["round" + str(i + 1)])
+
+
 def tournament_serialize(tournament):
     """
     Function to update db.json
     :param tournament: tournament to update
     """
     players = []
-    for item in tournament.players:
+    for item in tournament.players:  # to convert player object in id
         players.append([item[0].id_json, item[1]])
     db = TinyDB("db.json")
     tournament_table = db.table("tournaments")
@@ -55,46 +74,6 @@ def tournament_serialize(tournament):
                             query.name == tournament.name)
     round_serialize(tournament)
 
-def round_serialize(tournament):
-    player_deserialize()
-    db = TinyDB("db.json")
-    round_table = db.table("rounds")
-    query = Query()
-    for i, item in enumerate(tournament.rounds):
-        round_table.update({"match1": [(item.match1.first_player.id_json, item.match1.first_player_score),
-                                       (item.match1.second_player.id_json, item.match1.second_player_score),
-                                       item.match1.resolved],
-                            "match2": [(item.match2.first_player.id_json, item.match2.first_player_score),
-                                       (item.match2.second_player.id_json, item.match2.second_player_score),
-                                       item.match2.resolved],
-                            "match3": [(item.match3.first_player.id_json, item.match3.first_player_score),
-                                       (item.match3.second_player.id_json, item.match3.second_player_score),
-                                       item.match3.resolved],
-                            "match4": [(item.match4.first_player.id_json, item.match4.first_player_score),
-                                       (item.match4.second_player.id_json, item.match4.second_player_score),
-                                       item.match4.resolved],
-                            "status": item.status}, query.tournament == tournament.name and query.number == i+1)
-
-
-def tournament_deserialize():
-    """
-    Function to put all tournaments of the db.table in globals variables
-    :return:
-    """
-    player_deserialize()
-    db = TinyDB("db.json")
-    tournament_table = db.table("tournaments")
-    for item in tournament_table:
-        players = []
-        for player in item["players"]:
-            players.append((call_player(player[0]),player[1]))
-        globals()["tournament" + str(item.doc_id)] = Tournament(item["name"], item["place"], item["date"], players,
-                                                                item["time_control"], item["description"],
-                                                                item["nb_round"], item["finish"])
-        round_deserialize(globals()["tournament" + str(item.doc_id)])
-        globals()["tournament" + str(item.doc_id)].rounds = []
-        for i in range(item["round"]):
-            globals()["tournament" + str(item.doc_id)].rounds.append(globals()["round" + str(i + 1)])
 
 def round_deserialize(tournament):
     """
@@ -127,7 +106,34 @@ def round_deserialize(tournament):
                                                          item["status"])
 
 
-def round_add(turn, number):  # A refaire
+def round_serialize(tournament):
+    """
+    Function to update rounds in the db.json
+    :param tournament: tournament to retrieve rounds
+    """
+    player_deserialize()
+    db = TinyDB("db.json")
+    round_table = db.table("rounds")
+    query = Query()
+    for i, item in enumerate(tournament.rounds):
+        round_table.update({"match1": [(item.match1.first_player.id_json, item.match1.first_player_score),
+                                       (item.match1.second_player.id_json, item.match1.second_player_score),
+                                       item.match1.resolved],
+                            "match2": [(item.match2.first_player.id_json, item.match2.first_player_score),
+                                       (item.match2.second_player.id_json, item.match2.second_player_score),
+                                       item.match2.resolved],
+                            "match3": [(item.match3.first_player.id_json, item.match3.first_player_score),
+                                       (item.match3.second_player.id_json, item.match3.second_player_score),
+                                       item.match3.resolved],
+                            "match4": [(item.match4.first_player.id_json, item.match4.first_player_score),
+                                       (item.match4.second_player.id_json, item.match4.second_player_score),
+                                       item.match4.resolved],
+                            "status": item.status}, query.tournament == tournament.name and query.number == i + 1)
+
+
+# functions to add an object in the data base
+
+def round_add(turn, number):
     """
     Function to add round to db.json
     :param turn: round to add
@@ -152,28 +158,40 @@ def round_add(turn, number):  # A refaire
                         })
 
 
-# Players functions
-
-
-def add_player(last_name, first_name, date, gender, ranking):  # A refaire
+def add_player(last_name, first_name, date, gender, ranking):  # A refaire pour mettre objet joueur en variable
     """
     function to add a new player in the db.json
-    :return:
     """
     db = TinyDB("db.json")
     players_table = db.table("players")
     players_table.insert({"nom": last_name, "prenom": first_name, "date": date, "sexe": gender, "classement": ranking})
 
 
+def add_tournament(name, place, date, players, time_control, description, nb_round):  # A refaire pour mettre objet
+                                                                                      # tournoi en entrée
+    """
+    function to add a new player in the db.json
+    """
+    db = TinyDB("db.json")
+    tournament_table = db.table("tournaments")
+    if time_control == "1":
+        time_control = "bullet"
+    elif time_control == "2":
+        time_control = "blitz"
+    elif time_control == "3":
+        time_control = "coup rapide"
+    tournament_table.insert({"name": name, "place": place, "date": date, "players": players, "round": 0,
+                             "time_control": time_control, "description": description, "nb_round": nb_round,
+                             "finish": False})
+    new_round(1)
+
+# Players functions
+
+
 def change_player(i, last_name, first_name, date, gender):
     """
-    function to change player's informations in the db.json
-    :param gender:
-    :param date:
-    :param first_name:
-    :param last_name:
+    function to change player's information
     :param i: id of the player in the db.table
-    :return:
     """
     player_deserialize()
     i = int(i)
@@ -216,7 +234,7 @@ def call_player(i):
     return globals()["player" + str(i)]
 
 
-def number_player():  # A refaire
+def number_player():
     """
     :return: Number of player in the db.json
     """
@@ -224,25 +242,15 @@ def number_player():  # A refaire
     players_table = db.table("players")
     return len(players_table)
 
+
 # Tournament functions
 
 
-def add_tournament(name, place, date, players, time_control, description, nb_round):  # A refaire
-    db = TinyDB("db.json")
-    tournament_table = db.table("tournaments")
-    if time_control == "1":
-        time_control = "bullet"
-    elif time_control == "2":
-        time_control = "blitz"
-    elif time_control == "3":
-        time_control = "coup rapide"
-    tournament_table.insert({"name": name, "place": place, "date": date, "players": players, "round": 0,
-                             "time_control": time_control, "description": description, "nb_round": nb_round,
-                             "finish": False})
-    new_round(1)
-
-
-def view_tournament():  # A refaire
+def view_tournament():
+    """
+    function to view all tournament
+    :return: str with all tournament
+    """
     tournament_deserialize()
     db = TinyDB("db.json")
     tournament_table = db.table("tournaments")
@@ -251,10 +259,15 @@ def view_tournament():  # A refaire
 
 
 def new_round(i):
+    """
+    function to create a new round and 4 new match
+    :param i: indice of the tournament in the db.json
+    :return:
+    """
     tournament_deserialize()
     tournament = globals()["tournament" + str(i)]
     player_deserialize()
-    id_round = tournament.active_round()
+    id_round = tournament.active_round()  #
     if id_round == 0:
         player_list = []
         for player in tournament.players:
@@ -313,18 +326,18 @@ def continue_tournament(i):
         turn = tournament.rounds[-1]
         res = ""
         for j, item in enumerate(turn.match_list()):
-            res += str(j+1) + ": " + str(item) + item.status() + "\n"
+            res += str(j + 1) + ": " + str(item) + item.status() + "\n"
     return res
 
 
-def resolve_match(i,j,k):
+def resolve_match(i, j, k):
     tournament_deserialize()
     tournament = globals()["tournament" + str(i)]
     turn = tournament.rounds[-1]
-    j = int(j)-1
+    j = int(j) - 1
     k = int(k)
     turn.match_list()[j].resolve(k)
-    res = "le joueur " + str(turn.match_list()[j].first_player) +\
+    res = "le joueur " + str(turn.match_list()[j].first_player) + \
           " gagne " + str(turn.match_list()[j].first_player_score) + "points. \n" + \
           "le joueur " + str(turn.match_list()[j].second_player) + \
           " gagne " + str(turn.match_list()[j].second_player_score) + "points. \n"
