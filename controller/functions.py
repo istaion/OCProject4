@@ -267,12 +267,12 @@ def new_round(i):
     tournament_deserialize()
     tournament = globals()["tournament" + str(i)]
     player_deserialize()
-    id_round = tournament.active_round()  #
-    if id_round == 0:
-        player_list = []
+    id_round = tournament.active_round()  # place of the last round (0 if there is not round)
+    if id_round == 0:  # to create the first round
+        player_list = []  # list of players in the tournament
         for player in tournament.players:
             player_list.append(player[0])
-        player_list.sort()
+        player_list.sort()  # sort by ranking
         turn = Round(tournament.name, Match(player_list[0], player_list[4]), Match(player_list[1], player_list[5]),
                      Match(player_list[2], player_list[6]), Match(player_list[3], player_list[7]))
         round_add(turn, id_round + 1)
@@ -280,10 +280,10 @@ def new_round(i):
         tournament_serialize(tournament)
     elif id_round <= tournament.nb_round:
         player_list = list(tournament.players)
-        player_list.sort(key=lambda m: m[0])  # On commence par trier selon le classement
-        player_list.sort(reverse=True, key=lambda m: m[1])  # Puis selon le score
+        player_list.sort(key=lambda m: m[0])  # sort by ranking
+        player_list.sort(reverse=True, key=lambda m: m[1])  # sort by score
         match = [[], [], [], []]  # list wish contain 4 matchs
-        for n in range(4):
+        for n in range(4):  # take the first of the list, next take the second who haven't played against.
             match[n].append(player_list[0][0])
             stop = False
             for j in range(len(player_list) - 1):
@@ -292,9 +292,9 @@ def new_round(i):
                         break
                     elif i != id_round - 1:
                         continue
-                    match[n].append(player_list[j + 1][0])
+                    match[n].append(player_list[j + 1][0])  # store this players
                     player_list.pop(j + 1)
-                    player_list.pop(0)
+                    player_list.pop(0)  # suppress of the list for restart
                     stop = True
                 if stop:
                     break
@@ -342,7 +342,7 @@ def resolve_match(i, j, k):
           "le joueur " + str(turn.match_list()[j].second_player) + \
           " gagne " + str(turn.match_list()[j].second_player_score) + "points. \n"
     for indice, item in enumerate(turn.match_list()):
-        if item.resolved == False:
+        if not item.resolved:
             break
         else:
             if indice == 3:
