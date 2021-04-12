@@ -108,6 +108,7 @@ def round_deserialize(tournament):
                                                                item["match4"][0][1], item["match4"][1][1],
                                                                item["match4"][2]),
                                                          item["status"])
+        globals()["round" + str(item["number"])].number = item["number"]
         globals()["round" + str(item["number"])].date = item["date"]
         globals()["round" + str(item["number"])].end_date = item["end_date"]
         globals()["round" + str(item["number"])].match1.date = item["match1"][3]  # end date of match
@@ -144,7 +145,7 @@ def round_serialize(tournament):
 
 # functions to add an object in the data base
 
-def round_add(turn, number):
+def round_add(turn):
     """
     Function to add round to db.json
     :param turn: round to add
@@ -152,7 +153,7 @@ def round_add(turn, number):
     """
     db = TinyDB("db.json")
     round_table = db.table("rounds")
-    round_table.insert({"tournament": turn.tournament, "number": number,
+    round_table.insert({"tournament": turn.tournament, "number": turn.number,
                         "match1": [(turn.match1.first_player.id_json, turn.match1.first_player_score),
                                    (turn.match1.second_player.id_json, turn.match1.second_player_score),
                                    False, " "],
@@ -299,7 +300,8 @@ def new_round(i):
         turn = Round(tournament.name, Match(player_list[0], player_list[4]), Match(player_list[1], player_list[5]),
                      Match(player_list[2], player_list[6]), Match(player_list[3], player_list[7]))
         turn.date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-        round_add(turn, id_round + 1)
+        turn.number = id_round + 1
+        round_add(turn)
         tournament.rounds.append(turn)
         tournament_serialize(tournament)
     elif id_round <= tournament.nb_round:
@@ -325,7 +327,8 @@ def new_round(i):
         turn = Round(tournament.name, Match(match[0][0], match[0][1]), Match(match[1][0], match[1][1]),
                      Match(match[2][0], match[2][1]), Match(match[3][0], match[3][1]))
         turn.date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-        round_add(turn, id_round + 1)
+        turn.number = id_round + 1
+        round_add(turn)
         tournament.rounds.append(turn)
         tournament_serialize(tournament)
     else:
@@ -448,18 +451,18 @@ def round_tournament_report(i, j):
     tournament_deserialize()
     tournament = globals()["tournament" + str(i)]
     if j == "1":
-        for k, item in enumerate(tournament.rounds):
-            if item.status:
-                res += "tour" + str(k+1) + ": " + str(item) + ", date de début: " +\
-                       item.date + ", date de fin: " + item.end_date + "\n"
-            else:
-                res += "tour" + str(k) + ": " + str(item) + ", date de début: " +\
-                       item.date + ", ce match n'est pas fini." + "\n"
+        for item in tournament.rounds:
+            res += item.report()
     elif j == "2":
-        for k, item in enumerate(tournament.rounds):
-            res += "tour" + str(k) + ", " + ", date de début: " + item.date + "\n"
+        for item in tournament.rounds:
+            res += "tour" + str(item.number) + ", " + ", date de début: " + item.date + "\n"
             n = 1
             for match in item.match_list():
-                res += "     match" + str(n) + ": " + str(match) + ", status: " + match.status() +"\n"
-                n += 1
+                if not match.resolved:
+                    res += "     match" + str(n) + ": " + str(match) + ", status: non résolu" + "\n"
+                    n += 1
+                else:
+                    res += "     match" + str(n) + ": " + str(match) + ", status: " + match.status() + \
+                    ", date de fin : " + match.date + "\n"
+                    n += 1
     return res

@@ -111,6 +111,7 @@ class Round:
 
     def __init__(self, tournament, match1, match2, match3, match4, status=False):
         self.tournament = tournament  # str, name of the tournament's round
+        self.number = 0  # number of this round
         self.match1 = match1  # Match objet
         self.match2 = match2
         self.match3 = match3
@@ -122,6 +123,14 @@ class Round:
     def __repr__(self):
         return "match1 : " + str(self.match1) + " match2 : " \
                + str(self.match2) + " match3 : " + str(self.match3) + " match4 : " + str(self.match4)
+
+    def report(self):
+        if self.status:
+            return "tour" + str(self.number) + ": " + str(self) + ", date de début: " + \
+                   self.date + ", date de fin: " + self.end_date + "\n"
+        else:
+            return "tour" + str(self.number) + ": " + str(self) + ", date de début: " + \
+                   self.date + ", ce match n'est pas fini." + "\n"
 
     def opponent(self, player1, player2):  # A refaire (rajouter une boucle)
         """
