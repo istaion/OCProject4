@@ -385,3 +385,23 @@ def resolve_match(i, j, k):
                     res += "Fin du tournoi"
     tournament_serialize(tournament)
     return res
+
+# reports
+
+
+def player_report(alphabetical=False):
+    res = ""
+    player_deserialize()
+    player_list = []
+    for i in range(number_player()):
+        player_list.append(call_player(i+1))
+    if alphabetical:
+        player_list.sort(key=lambda m: m.last_name)
+        for item in player_list:
+            res += item.report() + "\n"
+    else:
+        player_list.sort()
+        for item in player_list:
+            res += item.report() + "\n"
+    return res
+

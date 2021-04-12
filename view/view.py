@@ -11,11 +11,14 @@ from functions import *
 def menu():
     print("1: menu joueur")
     print("2: menu tournoi")
+    print("3: rapports")
     reponse = input()
     if reponse == "1":
         player_menu()
     elif reponse == "2":
         tournament_menu()
+    elif reponse == "3":
+        report_menu()
 
 
 def player_menu():
@@ -80,3 +83,28 @@ def tournament_menu():
         print(resolve_match(i,j,k))
         tournament_menu()
 
+def report_menu():
+    print("1: liste des joueurs")
+    print("2: liste des tournois")
+    print("3: liste des tours/matchs")
+    print("4: menu principal")
+    reponse = input()
+    if reponse == "1":
+        print("1: par ordre alphébétique")
+        print("2: par classement")
+        reponse1 = input()
+        if reponse1 == "1":
+            print(player_report(True))
+            report_menu()
+        elif reponse1 == "2":
+            print(player_report())
+            report_menu()
+    elif reponse == "2":
+        pass
+    elif reponse == "3":
+        pass
+    elif reponse == "4":
+        menu()
+    else:
+        print("Vous devez saisir un nombre entre 1 et 4")
+        report_menu()

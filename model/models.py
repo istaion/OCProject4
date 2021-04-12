@@ -4,15 +4,19 @@
 class Player:
 
     def __init__(self, first_name, last_name, birth_date, gender, ranking, id_json):
-        self.first_name = first_name  # str
-        self.last_name = last_name  # str
+        self.first_name = first_name.capitalize()  # str
+        self.last_name = last_name.capitalize()  # str
         self.birth_date = birth_date  # str
         self.gender = gender  # str
         self.ranking = ranking  # int
         self.id_json = id_json  # int, id of player in the json file
 
     def __repr__(self):
-        return self.first_name + " " + self.last_name
+        return self.last_name + " " + self.first_name
+
+    def report(self):
+        return self.last_name + " " + self.first_name + " classement: " + str(self.ranking) +\
+               " date de naissance: " + self.birth_date + " genre: " + self.gender
 
     def __lt__(self, other):
         if self.ranking < other.ranking:
