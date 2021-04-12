@@ -102,10 +102,23 @@ def report_menu():
             report_menu()
     elif reponse == "2":
         print(tournament_report())
+        report_menu()
     elif reponse == "3":
         print(view_tournament())
         i = input("De quel tournoi voulez vous voir les joueurs ? ")
+        print("1: par classement ?")
+        print("2: par ordre alphébétique ?")
+        print("3: par score dans le tournoi ?")
+        j = input()
+        print(player_tournament_report(i, j))
+        report_menu()
     elif reponse == "4":
-        pass
+        print(view_tournament())
+        i = input("De quel tournoi voulez vous voir les tours/matchs ? ")
+        print("voulez vous le rapport :")
+        print("1: des tours ?")
+        print("2: des matchs ?")
+        j = input()
+        print(round_tournament_report(i, j))
     elif reponse == "5":
         menu()

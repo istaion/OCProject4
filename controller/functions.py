@@ -116,7 +116,6 @@ def round_deserialize(tournament):
         globals()["round" + str(item["number"])].match4.date = item["match4"][3]
 
 
-
 def round_serialize(tournament):
     """
     Function to update rounds in the db.json
@@ -181,7 +180,7 @@ def add_player(last_name, first_name, date, gender, ranking):  # A refaire pour 
 
 
 def add_tournament(name, place, players, time_control, description, nb_round):  # A refaire pour mettre objet
-                                                                                # tournoi en entrée
+    # tournoi en entrée
     """
     function to add a new player in the db.json
     """
@@ -194,9 +193,11 @@ def add_tournament(name, place, players, time_control, description, nb_round):  
     elif time_control == "3":
         time_control = "coup rapide"
     date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-    tournament_table.insert({"name": name, "place": place, "date": date, "end_date": " ", "players": players, "round": 0,
-                             "time_control": time_control, "description": description, "nb_round": nb_round,
-                             "finish": False})
+    tournament_table.insert(
+        {"name": name, "place": place, "date": date, "end_date": " ", "players": players, "round": 0,
+         "time_control": time_control, "description": description, "nb_round": nb_round,
+         "finish": False})
+
 
 # Players functions
 
@@ -259,7 +260,6 @@ def number_player():
 # Tournament functions
 
 
-
 def number_tournament():
     """
     :return: Number of tournament in the db.json
@@ -267,6 +267,7 @@ def number_tournament():
     db = TinyDB("db.json")
     tournament_table = db.table("tournaments")
     return len(tournament_table)
+
 
 def view_tournament():
     """
@@ -395,6 +396,7 @@ def resolve_match(i, j, k):
     tournament_serialize(tournament)
     return res
 
+
 # reports
 
 
@@ -403,7 +405,7 @@ def player_report(alphabetical=False):
     player_deserialize()
     player_list = []
     for i in range(number_player()):
-        player_list.append(call_player(i+1))
+        player_list.append(call_player(i + 1))
     if alphabetical:
         player_list.sort(key=lambda m: m.last_name)
         for item in player_list:
@@ -419,8 +421,45 @@ def tournament_report():
     res = ""
     tournament_deserialize()
     for i in range(number_tournament()):
-        res += globals()["tournament" + str(i+1)].report() + "\n"
+        res += globals()["tournament" + str(i + 1)].report() + "\n"
     return res
 
 
+def player_tournament_report(i, j):
+    res = ""
+    i = int(i)
+    tournament_deserialize()
+    tournament = globals()["tournament" + str(i)]
+    player_list = list(tournament.players)
+    if j == "1":
+        player_list.sort(key=lambda m: m[0])
+    elif j == "2":
+        player_list.sort(key=lambda m: m[0].last_name)
+    elif j == "3":
+        player_list.sort(reverse=True, key=lambda m: m[1])
+    for item in player_list:
+        res += item[0].report() + ", score: " + str(item[1]) + "\n"
+    return res
 
+
+def round_tournament_report(i, j):
+    res = ""
+    i = int(i)
+    tournament_deserialize()
+    tournament = globals()["tournament" + str(i)]
+    if j == "1":
+        for k, item in enumerate(tournament.rounds):
+            if item.status:
+                res += "tour" + str(k+1) + ": " + str(item) + ", date de début: " +\
+                       item.date + ", date de fin: " + item.end_date + "\n"
+            else:
+                res += "tour" + str(k) + ": " + str(item) + ", date de début: " +\
+                       item.date + ", ce match n'est pas fini." + "\n"
+    elif j == "2":
+        for k, item in enumerate(tournament.rounds):
+            res += "tour" + str(k) + ", " + ", date de début: " + item.date + "\n"
+            n = 1
+            for match in item.match_list():
+                res += "     match" + str(n) + ": " + str(match) + ", status: " + match.status() +"\n"
+                n += 1
+    return res
