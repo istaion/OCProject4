@@ -61,7 +61,6 @@ def tournament_menu():
     if reponse == "1":
         name = input("nom du nouveau tournoi ? ")
         place = input("lieu du nouveau tournoi ? ")
-        date = input("Date du nouveau tournoi ? ")
         print("selectionner les 8 joueurs qui participeront à ce tournoi :")
         print(view_player())
         players = []
@@ -70,7 +69,7 @@ def tournament_menu():
         nb_round = int(input("Nombre de tour du nouveau tournoi ? "))
         time_control = input("Contrôleur de temps ? Tapez 1 pour bullet, 2 pour blitz ou 3 pour coup rapide. ")
         description = input("Description du nouveau tournoi ? ")
-        add_tournament(name, place, date, players, time_control, description, nb_round)
+        add_tournament(name, place, players, time_control, description, nb_round)
         tournament_menu()
     elif reponse == "2":
         print(view_tournament())

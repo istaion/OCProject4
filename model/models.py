@@ -63,6 +63,7 @@ class Tournament:
         self.nb_round = nb_round  # int, number of rounds in the tournament
         self.finish = finish  # boolean to control if the tournament is finished
         self.rounds = rounds  # list of round
+        self.end_date = " "
 
     def active_round(self):
         """
@@ -101,6 +102,8 @@ class Round:
         self.match3 = match3
         self.match4 = match4
         self.status = status  # boolean to control if the round is finished
+        self.date = " "
+        self.end_date = " "
 
     def __repr__(self):
         return "match1 : " + str(self.match1) + " match2 : " \
@@ -157,6 +160,7 @@ class Match:
         self.second_player = second_player
         self.second_player_score = second_player_score
         self.resolved = resolved  # False, first_win, second_win, ex_aequo
+        self.date = " "
 
     def __repr__(self):
         return str(self.first_player) + " versus " + str(self.second_player)
