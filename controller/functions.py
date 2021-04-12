@@ -419,7 +419,8 @@ def tournament_report():
     res = ""
     tournament_deserialize()
     for i in range(number_tournament()):
-        print(globals()["tournament" + str(i+1)].report())
+        res += globals()["tournament" + str(i+1)].report() + "\n"
+    return res
 
 
 

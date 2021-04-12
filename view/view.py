@@ -103,7 +103,8 @@ def report_menu():
     elif reponse == "2":
         print(tournament_report())
     elif reponse == "3":
-        pass
+        print(view_tournament())
+        i = input("De quel tournoi voulez vous voir les joueurs ? ")
     elif reponse == "4":
         pass
     elif reponse == "5":

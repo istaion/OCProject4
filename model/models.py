@@ -72,11 +72,11 @@ class Tournament:
     def report(self):
         if self.finish:
             return "tournoi: " + self.name + ", status: fini, date de début: " + self.date +\
-            ", date de fin: " + self.end_date + ", contrôle du temps: " + self.time_control +\
+            ", date de fin: " + self.end_date + ", lieu: " + self.place + ", contrôle du temps: " + self.time_control +\
             ", nombre de round: " + str(self.nb_round) + "\n" + "         description: " + self.descritpion + "\n"
         else:
             return "tournoi: " + self.name + ", status: en cours, date de début: " + self.date +\
-            ", contrôle du temps: " + self.time_control +\
+            ", lieu: " + self.place + ", contrôle du temps: " + self.time_control +\
             ", nombre de round: " + str(self.nb_round) + "\n" + "         description: " + self.descritpion + "\n"
 
     def active_round(self):
