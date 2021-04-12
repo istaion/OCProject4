@@ -86,8 +86,9 @@ def tournament_menu():
 def report_menu():
     print("1: liste des joueurs")
     print("2: liste des tournois")
-    print("3: liste des tours/matchs")
-    print("4: menu principal")
+    print("3: liste des joueurs d'un tournoi")
+    print("4: liste des tours/matchs d'un tournoi")
+    print("5: menu principal")
     reponse = input()
     if reponse == "1":
         print("1: par ordre alphébétique")
@@ -100,11 +101,10 @@ def report_menu():
             print(player_report())
             report_menu()
     elif reponse == "2":
-        pass
+        print(tournament_report())
     elif reponse == "3":
         pass
     elif reponse == "4":
+        pass
+    elif reponse == "5":
         menu()
-    else:
-        print("Vous devez saisir un nombre entre 1 et 4")
-        report_menu()

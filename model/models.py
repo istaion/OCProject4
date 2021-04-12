@@ -15,8 +15,8 @@ class Player:
         return self.last_name + " " + self.first_name
 
     def report(self):
-        return self.last_name + " " + self.first_name + " classement: " + str(self.ranking) +\
-               " date de naissance: " + self.birth_date + " genre: " + self.gender
+        return self.last_name + " " + self.first_name + ", classement: " + str(self.ranking) +\
+               ", date de naissance: " + self.birth_date + ", genre: " + self.gender
 
     def __lt__(self, other):
         if self.ranking < other.ranking:
@@ -68,6 +68,16 @@ class Tournament:
         self.finish = finish  # boolean to control if the tournament is finished
         self.rounds = rounds  # list of round
         self.end_date = " "
+
+    def report(self):
+        if self.finish:
+            return "tournoi: " + self.name + ", status: fini, date de début: " + self.date +\
+            ", date de fin: " + self.end_date + ", contrôle du temps: " + self.time_control +\
+            ", nombre de round: " + str(self.nb_round) + "\n" + "         description: " + self.descritpion + "\n"
+        else:
+            return "tournoi: " + self.name + ", status: en cours, date de début: " + self.date +\
+            ", contrôle du temps: " + self.time_control +\
+            ", nombre de round: " + str(self.nb_round) + "\n" + "         description: " + self.descritpion + "\n"
 
     def active_round(self):
         """

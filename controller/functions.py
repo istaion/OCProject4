@@ -259,6 +259,15 @@ def number_player():
 # Tournament functions
 
 
+
+def number_tournament():
+    """
+    :return: Number of tournament in the db.json
+    """
+    db = TinyDB("db.json")
+    tournament_table = db.table("tournaments")
+    return len(tournament_table)
+
 def view_tournament():
     """
     function to view all tournament
@@ -404,4 +413,13 @@ def player_report(alphabetical=False):
         for item in player_list:
             res += item.report() + "\n"
     return res
+
+
+def tournament_report():
+    res = ""
+    tournament_deserialize()
+    for i in range(number_tournament()):
+        print(globals()["tournament" + str(i+1)].report())
+
+
 
