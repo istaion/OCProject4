@@ -12,7 +12,8 @@ def menu():
     print("1: menu joueur")
     print("2: menu tournoi")
     print("3: rapports")
-    reponse = input()
+    print("4: quitter le programme")
+    reponse = input_exception(1, 4)
     if reponse == "1":
         player_menu()
     elif reponse == "2":
@@ -27,7 +28,7 @@ def player_menu():
     print("3: modifier les informations d'un joueur")
     print("4: changer les classements")
     print("5: retourner au menu principal")
-    reponse = input()
+    reponse = input_exception(1, 5)
     if reponse == "1":
         print(view_player())
         player_menu()
@@ -36,12 +37,20 @@ def player_menu():
         first_name = input("Prénom du joueur ? ")
         date = input("Date de naissance du joueur ? ")
         gender = input("Sexe du joueur ? ")
-        ranking = input("Classement du joueur ? ")
+        bo = True
+        while bo:
+            try:
+                ranking = input("Classement du joueur ? ")
+                ranking = int(ranking)
+                bo = False
+            except ValueError:
+                print("vous devez saisir un nombre entier")
         add_player(last_name, first_name, date, gender, ranking)
         player_menu()
     elif reponse == "3":
         print(view_player())
-        i = input("quel joueur voulez vous modifier ? (saisissez le nombre) :")
+        print("quel joueur voulez vous modifier ? (saisissez le nombre) :")
+        i = input_exception(1, number_player())
         last_name = input("Nom de famille du joueur ? ")
         first_name = input("Prénom du joueur ? ")
         date = input("Date de naissance du joueur ? ")
@@ -53,35 +62,47 @@ def player_menu():
         player_menu()
     elif reponse == "5":
         menu()
-    else:
-        print("vous devez saisir un entier entre 1 et 5")
-        player_menu()
+
 
 def tournament_menu():
     print("1: Créer un nouveau tournoi")
     print("2: Continuer un tournoi")
-    reponse = input()
+    print("3: Retourner au menu principal")
+    reponse = input_exception(1, 3)
     if reponse == "1":
         name = input("nom du nouveau tournoi ? ")
         place = input("lieu du nouveau tournoi ? ")
         print("selectionner les 8 joueurs qui participeront à ce tournoi :")
         print(view_player())
-        players = []
+        new_players = []
         for i in range(8):
-            players.append([int(input("numéro du joueur :")), 0])
-        nb_round = int(input("Nombre de tour du nouveau tournoi ? "))
-        time_control = input("Contrôleur de temps ? Tapez 1 pour bullet, 2 pour blitz ou 3 pour coup rapide. ")
+            bo = True
+            while bo:
+                try:
+                    new = int(input("numéro du joueur :"))
+                    assert new not in new_players
+                    assert 0 <= new <= number_player()
+                    new_players.append(new)
+                    bo = False
+                except AssertionError:
+                    print("Ce joueur a déja été seléctionné ou n'existe pas.")
+                except ValueError:
+                    print("Vous devez saisir un nombre")
+        nb_round = int(input_exception(1, 7, "Nombre de tour du nouveau tournoi ? "))
+        time_control = input_exception(1, 3, "Contrôleur de temps ? Tapez 1 pour bullet, 2 pour blitz ou 3 pour coup rapide. ")
         description = input("Description du nouveau tournoi ? ")
         add_tournament(name, place, players, time_control, description, nb_round)
         tournament_menu()
     elif reponse == "2":
         print(view_tournament())
-        i = input("Quel tournoi voulez vous continuer ? ")
+        i = input_tournament_exception("Quel tournoi voulez vous continuer ? ")
         print(continue_tournament(i))
-        j = input("Saisissez le numéro du match à résoudre :")
-        k = input("Qui à gagné ? Taper 1 pour le premier joueur, 2 pour le deuxième, 3 pour ex aequo : ")
+        j = input_match_exception(i, "Saisissez le numéro du match à résoudre :")
+        k = input_exception(1, 3, "Qui à gagné ? Taper 1 pour le premier joueur, 2 pour le deuxième, 3 pour ex aequo : ")
         print(resolve_match(i,j,k))
         tournament_menu()
+    elif reponse == "3":
+        menu()
 
 def report_menu():
     print("1: liste des joueurs")
@@ -89,11 +110,11 @@ def report_menu():
     print("3: liste des joueurs d'un tournoi")
     print("4: liste des tours/matchs d'un tournoi")
     print("5: menu principal")
-    reponse = input()
+    reponse = input_exception(1, 5)
     if reponse == "1":
         print("1: par ordre alphébétique")
         print("2: par classement")
-        reponse1 = input()
+        reponse1 = input_exception(1, 2)
         if reponse1 == "1":
             print(player_report(True))
             report_menu()
@@ -105,20 +126,20 @@ def report_menu():
         report_menu()
     elif reponse == "3":
         print(view_tournament())
-        i = input("De quel tournoi voulez vous voir les joueurs ? ")
+        i = input_exception(1, number_tournament(), "De quel tournoi voulez vous voir les joueurs ? ")
         print("1: par classement ?")
         print("2: par ordre alphébétique ?")
         print("3: par score dans le tournoi ?")
-        j = input()
+        j = input_exception(1, 3)
         print(player_tournament_report(i, j))
         report_menu()
     elif reponse == "4":
         print(view_tournament())
-        i = input("De quel tournoi voulez vous voir les tours/matchs ? ")
+        i = input_exception(1, number_tournament(), "De quel tournoi voulez vous voir les tours/matchs ? ")
         print("voulez vous le rapport :")
         print("1: des tours ?")
         print("2: des matchs ?")
-        j = input()
+        j = input_exception(1, 2)
         print(round_tournament_report(i, j))
     elif reponse == "5":
         menu()

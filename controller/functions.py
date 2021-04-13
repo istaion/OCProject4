@@ -14,7 +14,7 @@ from time import strftime
 # Conversion between data base and models
 
 
-def player_deserialize():
+def player_deserialize ():
     """
     Function to put all players of the db.table in globals variables
     :return:
@@ -26,7 +26,7 @@ def player_deserialize():
             "classement"], item.doc_id)
 
 
-def player_serialize(player):
+def player_serialize (player):
     """
     Function to update db.json
     :param player: player to update
@@ -37,7 +37,7 @@ def player_serialize(player):
                           "sexe": player.gender, "classement": player.ranking}, doc_ids=[player.id_json])
 
 
-def tournament_deserialize():
+def tournament_deserialize ():
     """
     Function to put all tournaments of the db.table in globals variables
     :return:
@@ -59,7 +59,7 @@ def tournament_deserialize():
             globals()["tournament" + str(item.doc_id)].rounds.append(globals()["round" + str(i + 1)])
 
 
-def tournament_serialize(tournament):
+def tournament_serialize (tournament):
     """
     Function to update db.json
     :param tournament: tournament to update
@@ -79,7 +79,7 @@ def tournament_serialize(tournament):
     round_serialize(tournament)
 
 
-def round_deserialize(tournament):
+def round_deserialize (tournament):
     """
     Function to put all round of a tournament in globals variables
     :param tournament: tournament to retrieve rounds
@@ -117,7 +117,7 @@ def round_deserialize(tournament):
         globals()["round" + str(item["number"])].match4.date = item["match4"][3]
 
 
-def round_serialize(tournament):
+def round_serialize (tournament):
     """
     Function to update rounds in the db.json
     :param tournament: tournament to retrieve rounds
@@ -145,7 +145,7 @@ def round_serialize(tournament):
 
 # functions to add an object in the data base
 
-def round_add(turn):
+def round_add (turn):
     """
     Function to add round to db.json
     :param turn: round to add
@@ -171,7 +171,7 @@ def round_add(turn):
                         })
 
 
-def add_player(last_name, first_name, date, gender, ranking):  # A refaire pour mettre objet joueur en variable
+def add_player (last_name, first_name, date, gender, ranking):  # A refaire pour mettre objet joueur en variable
     """
     function to add a new player in the db.json
     """
@@ -180,7 +180,7 @@ def add_player(last_name, first_name, date, gender, ranking):  # A refaire pour 
     players_table.insert({"nom": last_name, "prenom": first_name, "date": date, "sexe": gender, "classement": ranking})
 
 
-def add_tournament(name, place, players, time_control, description, nb_round):  # A refaire pour mettre objet
+def add_tournament (name, place, players, time_control, description, nb_round):  # A refaire pour mettre objet
     # tournoi en entrée
     """
     function to add a new player in the db.json
@@ -203,7 +203,7 @@ def add_tournament(name, place, players, time_control, description, nb_round):  
 # Players functions
 
 
-def change_player(i, last_name, first_name, date, gender):
+def change_player (i, last_name, first_name, date, gender):
     """
     function to change player's information
     :param i: id of the player in the db.table
@@ -217,7 +217,7 @@ def change_player(i, last_name, first_name, date, gender):
     player_serialize(call_player(i))
 
 
-def change_ranking():
+def change_ranking ():
     """
     function to change all ranking
     :return:
@@ -225,11 +225,19 @@ def change_ranking():
     player_deserialize()
     for i in range(number_player()):
         print(str(call_player(i + 1)) + " classement : " + str(call_player(i + 1).ranking))
-        call_player(i + 1).ranking = input("nouveau classement :")
+        bo = True
+        while bo:
+            try:
+                j = input("nouveau classement ? ")
+                j = int(j)
+                bo = False
+            except ValueError:
+                print("vous devez saisir un nombre entier")
+        call_player(i + 1).ranking = j
         player_serialize(call_player(i + 1))
 
 
-def view_player():
+def view_player ():
     """
     :return: str with all players in the db.table
     """
@@ -241,7 +249,7 @@ def view_player():
     return players
 
 
-def call_player(i):
+def call_player (i):
     """
     :param i: place of the player in the db.json
     :return: Player object
@@ -249,7 +257,7 @@ def call_player(i):
     return globals()["player" + str(i)]
 
 
-def number_player():
+def number_player ():
     """
     :return: Number of player in the db.json
     """
@@ -261,7 +269,7 @@ def number_player():
 # Tournament functions
 
 
-def number_tournament():
+def number_tournament ():
     """
     :return: Number of tournament in the db.json
     """
@@ -270,7 +278,7 @@ def number_tournament():
     return len(tournament_table)
 
 
-def view_tournament():
+def view_tournament ():
     """
     function to view all tournament
     :return: str with all tournament
@@ -282,7 +290,7 @@ def view_tournament():
         print("tournoi {} : {}".format(i + 1, globals()["tournament" + str(i + 1)]))
 
 
-def new_round(i):
+def new_round (i):
     """
     function to create a new round and 4 new match
     :param i: indice of the tournament in the db.json
@@ -335,36 +343,33 @@ def new_round(i):
         print("erreur")
 
 
-def continue_tournament(i):
+def continue_tournament (i):
     """
-    check if the tournament is finish or if the active round is finish.
+    check if the active round is finish.
     if the active round is finish create a new round
     :param i: tournament id
     :return: str with the list of match to select the match to resolve
     """
     tournament_deserialize()
     tournament = globals()["tournament" + str(i)]
-    if tournament.finish:
-        res = "ce tournoi est fini"
+    if tournament.active_round() == 0:
+        new_round(i)
+        tournament_deserialize()
+        tournament = globals()["tournament" + str(i)]
     else:
-        if tournament.active_round() == 0:
+        turn = tournament.rounds[-1]
+        if turn.status:
             new_round(i)
             tournament_deserialize()
             tournament = globals()["tournament" + str(i)]
-        else:
-            turn = tournament.rounds[-1]
-            if turn.status:
-                new_round(i)
-                tournament_deserialize()
-                tournament = globals()["tournament" + str(i)]
-        turn = tournament.rounds[-1]
-        res = ""
-        for j, item in enumerate(turn.match_list()):
-            res += str(j + 1) + ": " + str(item) + item.status() + "\n"
+    turn = tournament.rounds[-1]
+    res = ""
+    for j, item in enumerate(turn.match_list()):
+        res += str(j + 1) + ": " + str(item) + item.status() + "\n"
     return res
 
 
-def resolve_match(i, j, k):
+def resolve_match (i, j, k):
     """
     to resolve a match and add score of players
     :param i: tournament id
@@ -403,7 +408,7 @@ def resolve_match(i, j, k):
 # reports
 
 
-def player_report(alphabetical=False):
+def player_report (alphabetical=False):
     res = ""
     player_deserialize()
     player_list = []
@@ -420,7 +425,7 @@ def player_report(alphabetical=False):
     return res
 
 
-def tournament_report():
+def tournament_report ():
     res = ""
     tournament_deserialize()
     for i in range(number_tournament()):
@@ -428,7 +433,7 @@ def tournament_report():
     return res
 
 
-def player_tournament_report(i, j):
+def player_tournament_report (i, j):
     res = ""
     i = int(i)
     tournament_deserialize()
@@ -445,7 +450,7 @@ def player_tournament_report(i, j):
     return res
 
 
-def round_tournament_report(i, j):
+def round_tournament_report (i, j):
     res = ""
     i = int(i)
     tournament_deserialize()
@@ -463,6 +468,56 @@ def round_tournament_report(i, j):
                     n += 1
                 else:
                     res += "     match" + str(n) + ": " + str(match) + ", status: " + match.status() + \
-                    ", date de fin : " + match.date + "\n"
+                           ", date de fin : " + match.date + "\n"
                     n += 1
     return res
+
+
+def input_exception (min, max, message=""):
+    bo = True
+    while bo:
+        try:
+            reponse = input(message)
+            assert min <= int(reponse) <= max
+            bo = False
+        except AssertionError:
+            print("Vous devez saisir un nombre entre {} et {} :".format(min, max))
+        except ValueError:
+            print("Vous devez saisir un nombre")
+    return reponse
+
+
+def input_match_exception (i, message=""):
+    i = int(i)
+    tournament_deserialize()
+    tournament = globals()["tournament" + str(i)]
+    turn = tournament.rounds[-1]
+    bo = True
+    while bo:
+        try:
+            reponse = input(message)
+            reponse = int(reponse)
+            assert 1 <= reponse <= 4
+            assert False == turn.match_list()[reponse - 1].resolved
+            bo = False
+        except AssertionError:
+            print("Vous devez saisir un nombre entre 1 et 4 et le match correspondant ne doit pas avoir été résolu")
+        except ValueError:
+            print("Vous devez saisir un nombre")
+    return reponse
+
+
+def input_tournament_exception (message=""):
+    tournament_deserialize()
+    bo = True
+    while bo:
+        try:
+            reponse = input(message)
+            assert 1 <= int(reponse) <= number_tournament()
+            assert globals()["tournament" + str(reponse)].finish == False
+            bo = False
+        except AssertionError:
+            print("Ce tournoi est déja fini ou n'existe pas.")
+        except ValueError:
+            print("Vous devez saisir un nombre")
+    return reponse
