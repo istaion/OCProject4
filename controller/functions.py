@@ -311,18 +311,20 @@ def new_round(i):
         tournament_serialize(tournament)
     elif id_round <= tournament.nb_round:
         player_list = list(tournament.players)
-        print(player_list)
         player_list.sort(key=lambda m: m[0])  # sort by ranking
-        print(player_list)
         player_list.sort(reverse=True, key=lambda m: m[1])  # sort by score
-        print(player_list)
         match = [[], [], [], []]  # list wish contain 4 matchs
         for n in range(4):  # take the first of the list, next take the second who haven't played against.
             match[n].append(player_list[0][0])
             stop = False
             for j in range(len(player_list) - 1):
+                if j == len(player_list) - 2:  # in case the player have already played against all remaining players
+                    match[n].append(player_list[j + 1][0])  # store this players
+                    player_list.pop(j + 1)
+                    player_list.pop(0)  # suppress of the list for restart
+                    break
                 for i, turn in enumerate(tournament.rounds):
-                    if turn.opponent(player_list[0][0], player_list[j + 1][0]):
+                    if turn.opponent(player_list[0][0], player_list[j + 1][0]):  # control if they have played
                         break
                     elif i != id_round - 1:
                         continue
@@ -332,7 +334,6 @@ def new_round(i):
                     stop = True
                 if stop:
                     break
-        print(match)
         turn = Round(tournament.name, Match(match[0][0], match[0][1]), Match(match[1][0], match[1][1]),
                      Match(match[2][0], match[2][1]), Match(match[3][0], match[3][1]))
         turn.date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
