@@ -86,6 +86,9 @@ def tournament_menu():
                     print("Ce joueur a déja été seléctionné ou n'existe pas.")
                 except ValueError:
                     print("Vous devez saisir un nombre")
+        players = []
+        for item in new_players:
+            players.append([item, 0])
         nb_round = int(input_exception(1, 7, "Nombre de tour du nouveau tournoi ? "))
         time_control = input_exception(1, 3, "Contrôleur de temps ? Tapez 1 pour bullet,"
                                              " 2 pour blitz ou 3 pour coup rapide. ")
@@ -143,5 +146,6 @@ def report_menu():
         print("2: des matchs ?")
         j = input_exception(1, 2)
         print(round_tournament_report(i, j))  # i : indice of the tournament, j : 1 for round, 2 for match
+        report_menu()
     elif reponse == "5":
         menu()
