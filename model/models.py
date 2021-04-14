@@ -15,6 +15,9 @@ class Player:
         return self.last_name + " " + self.first_name
 
     def report(self):
+        """
+        :return: str with all player's information
+        """
         return self.last_name + " " + self.first_name + ", classement: " + str(self.ranking) +\
                ", date de naissance: " + self.birth_date + ", genre: " + self.gender
 
@@ -70,6 +73,9 @@ class Tournament:
         self.end_date = " "
 
     def report(self):
+        """
+        :return: str with all tournament informations (except players and matchs)
+        """
         if self.finish:
             return "tournoi: " + self.name + ", status: fini, date de début: " + self.date +\
             ", date de fin: " + self.end_date + ", lieu: " + self.place + ", contrôle du temps: " + self.time_control +\
@@ -132,29 +138,21 @@ class Round:
             return "tour" + str(self.number) + ": " + str(self) + ", date de début: " + \
                    self.date + ", ce match n'est pas fini." + "\n"
 
-    def opponent(self, player1, player2):  # A refaire (rajouter une boucle)
+    def opponent(self, player1, player2):
         """
         controll if 2 players have already played against each other
         :param player1: Player object
         :param player2: Player object
         :return: if they already played : True, else : False
         """
-        reponse = False
+        response = False
         player1 = player1.id_json
         player2 = player2.id_json
-        if self.match1.first_player.id_json == player1 or self.match1.second_player.id_json == player1:
-            if self.match1.first_player.id_json == player2 or self.match1.second_player.id_json == player2:
-                reponse = True
-        elif self.match2.first_player.id_json == player1 or self.match2.second_player.id_json == player1:
-            if self.match2.first_player.id_json == player2 or self.match2.second_player.id_json == player2:
-                reponse = True
-        elif self.match3.first_player.id_json == player1 or self.match3.second_player.id_json == player1:
-            if self.match3.first_player.id_json == player2 or self.match3.second_player.id_json == player2:
-                reponse = True
-        elif self.match4.first_player.id_json == player1 or self.match4.second_player.id_json == player1:
-            if self.match4.first_player.id_json == player2 or self.match4.second_player.id_json == player2:
-                reponse = True
-        return reponse
+        for item in self.match_list():
+            if item.first_player.id_json == player1 or item.second_player.id_json == player1:
+                if item.first_player.id_json == player2 or item.second_player.id_json == player2:
+                    response = True
+        return response
 
     def score(self, player):
         """

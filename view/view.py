@@ -2,9 +2,7 @@
 # coding: utf-8
 
 import sys
-
 sys.path.extend(["../controller"])
-
 from functions import *
 
 
@@ -37,15 +35,15 @@ def player_menu():
         first_name = input("Prénom du joueur ? ")
         date = input("Date de naissance du joueur ? ")
         gender = input("Sexe du joueur ? ")
-        bo = True
-        while bo:
+        bo = True  # boolean = False when the input is correct
+        while bo:  # check if the input is a int object
             try:
                 ranking = input("Classement du joueur ? ")
                 ranking = int(ranking)
                 bo = False
             except ValueError:
                 print("vous devez saisir un nombre entier")
-        add_player(last_name, first_name, date, gender, ranking)
+        add_player(last_name, first_name, date, gender, ranking)  # add a player to the db.json
         player_menu()
     elif reponse == "3":
         print(view_player())
@@ -76,8 +74,8 @@ def tournament_menu():
         print(view_player())
         new_players = []
         for i in range(8):
-            bo = True
-            while bo:
+            bo = True  # boolean = False when the input is correct
+            while bo:  # check if the input match with a player who has not already been selected
                 try:
                     new = int(input("numéro du joueur :"))
                     assert new not in new_players
@@ -89,20 +87,23 @@ def tournament_menu():
                 except ValueError:
                     print("Vous devez saisir un nombre")
         nb_round = int(input_exception(1, 7, "Nombre de tour du nouveau tournoi ? "))
-        time_control = input_exception(1, 3, "Contrôleur de temps ? Tapez 1 pour bullet, 2 pour blitz ou 3 pour coup rapide. ")
+        time_control = input_exception(1, 3, "Contrôleur de temps ? Tapez 1 pour bullet,"
+                                             " 2 pour blitz ou 3 pour coup rapide. ")
         description = input("Description du nouveau tournoi ? ")
-        add_tournament(name, place, players, time_control, description, nb_round)
+        add_tournament(name, place, players, time_control, description, nb_round)  # add tournament in the db.json
         tournament_menu()
     elif reponse == "2":
         print(view_tournament())
         i = input_tournament_exception("Quel tournoi voulez vous continuer ? ")
-        print(continue_tournament(i))
+        print(continue_tournament(i))  # eventually create a new round and print list of match
         j = input_match_exception(i, "Saisissez le numéro du match à résoudre :")
-        k = input_exception(1, 3, "Qui à gagné ? Taper 1 pour le premier joueur, 2 pour le deuxième, 3 pour ex aequo : ")
-        print(resolve_match(i,j,k))
+        k = input_exception(1, 3, "Qui à gagné ? Taper 1 pour le premier joueur,"
+                                  " 2 pour le deuxième, 3 pour ex aequo : ")
+        print(resolve_match(i, j, k))
         tournament_menu()
     elif reponse == "3":
         menu()
+
 
 def report_menu():
     print("1: liste des joueurs")
@@ -116,7 +117,7 @@ def report_menu():
         print("2: par classement")
         reponse1 = input_exception(1, 2)
         if reponse1 == "1":
-            print(player_report(True))
+            print(player_report(True))  # True means in alphabetical order
             report_menu()
         elif reponse1 == "2":
             print(player_report())
@@ -131,7 +132,8 @@ def report_menu():
         print("2: par ordre alphébétique ?")
         print("3: par score dans le tournoi ?")
         j = input_exception(1, 3)
-        print(player_tournament_report(i, j))
+        print(player_tournament_report(i, j))  # i : indice of the tournament, j : order, 1 for ranking,
+        # 2 for alphabetical, 3 for score
         report_menu()
     elif reponse == "4":
         print(view_tournament())
@@ -140,6 +142,6 @@ def report_menu():
         print("1: des tours ?")
         print("2: des matchs ?")
         j = input_exception(1, 2)
-        print(round_tournament_report(i, j))
+        print(round_tournament_report(i, j))  # i : indice of the tournament, j : 1 for round, 2 for match
     elif reponse == "5":
         menu()

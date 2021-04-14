@@ -8,16 +8,14 @@ sys.path.append("../model")
 from tinydb import TinyDB, Query
 from models import Player, Tournament, Round, Match
 from datetime import datetime
-from time import strftime
 
 
 # Conversion between data base and models
 
 
-def player_deserialize ():
+def player_deserialize():
     """
     Function to put all players of the db.table in globals variables
-    :return:
     """
     db = TinyDB("db.json")
     players_table = db.table("players")
@@ -26,7 +24,7 @@ def player_deserialize ():
             "classement"], item.doc_id)
 
 
-def player_serialize (player):
+def player_serialize(player):
     """
     Function to update db.json
     :param player: player to update
@@ -37,10 +35,9 @@ def player_serialize (player):
                           "sexe": player.gender, "classement": player.ranking}, doc_ids=[player.id_json])
 
 
-def tournament_deserialize ():
+def tournament_deserialize():
     """
     Function to put all tournaments of the db.table in globals variables
-    :return:
     """
     player_deserialize()
     db = TinyDB("db.json")
@@ -59,7 +56,7 @@ def tournament_deserialize ():
             globals()["tournament" + str(item.doc_id)].rounds.append(globals()["round" + str(i + 1)])
 
 
-def tournament_serialize (tournament):
+def tournament_serialize(tournament):
     """
     Function to update db.json
     :param tournament: tournament to update
@@ -79,9 +76,9 @@ def tournament_serialize (tournament):
     round_serialize(tournament)
 
 
-def round_deserialize (tournament):
+def round_deserialize(tournament):
     """
-    Function to put all round of a tournament in globals variables
+    Function to put all round and matchs of a tournament in variables
     :param tournament: tournament to retrieve rounds
     """
     player_deserialize()
@@ -117,7 +114,7 @@ def round_deserialize (tournament):
         globals()["round" + str(item["number"])].match4.date = item["match4"][3]
 
 
-def round_serialize (tournament):
+def round_serialize(tournament):
     """
     Function to update rounds in the db.json
     :param tournament: tournament to retrieve rounds
@@ -145,11 +142,10 @@ def round_serialize (tournament):
 
 # functions to add an object in the data base
 
-def round_add (turn):
+def round_add(turn):
     """
     Function to add round to db.json
     :param turn: round to add
-    :param number: place of the round in the tournament
     """
     db = TinyDB("db.json")
     round_table = db.table("rounds")
@@ -171,7 +167,7 @@ def round_add (turn):
                         })
 
 
-def add_player (last_name, first_name, date, gender, ranking):  # A refaire pour mettre objet joueur en variable
+def add_player(last_name, first_name, date, gender, ranking):
     """
     function to add a new player in the db.json
     """
@@ -180,10 +176,9 @@ def add_player (last_name, first_name, date, gender, ranking):  # A refaire pour
     players_table.insert({"nom": last_name, "prenom": first_name, "date": date, "sexe": gender, "classement": ranking})
 
 
-def add_tournament (name, place, players, time_control, description, nb_round):  # A refaire pour mettre objet
-    # tournoi en entrée
+def add_tournament(name, place, players, time_control, description, nb_round):
     """
-    function to add a new player in the db.json
+    function to add a new tournament in the db.json
     """
     db = TinyDB("db.json")
     tournament_table = db.table("tournaments")
@@ -203,10 +198,14 @@ def add_tournament (name, place, players, time_control, description, nb_round): 
 # Players functions
 
 
-def change_player (i, last_name, first_name, date, gender):
+def change_player(i, last_name, first_name, date, gender):
     """
     function to change player's information
     :param i: id of the player in the db.table
+    :param gender: str
+    :param date: birth date, str
+    :param first_name: str
+    :param last_name: str
     """
     player_deserialize()
     i = int(i)
@@ -217,16 +216,15 @@ def change_player (i, last_name, first_name, date, gender):
     player_serialize(call_player(i))
 
 
-def change_ranking ():
+def change_ranking():
     """
     function to change all ranking
-    :return:
     """
     player_deserialize()
     for i in range(number_player()):
         print(str(call_player(i + 1)) + " classement : " + str(call_player(i + 1).ranking))
-        bo = True
-        while bo:
+        bo = True  # boolean = False when the input is correct
+        while bo:  # check if the input is an int object
             try:
                 j = input("nouveau classement ? ")
                 j = int(j)
@@ -237,9 +235,9 @@ def change_ranking ():
         player_serialize(call_player(i + 1))
 
 
-def view_player ():
+def view_player():
     """
-    :return: str with all players in the db.table
+    :return: str with all players (id, name and ranking) in the db.table
     """
     player_deserialize()
     players = ""
@@ -249,7 +247,7 @@ def view_player ():
     return players
 
 
-def call_player (i):
+def call_player(i):
     """
     :param i: place of the player in the db.json
     :return: Player object
@@ -257,7 +255,7 @@ def call_player (i):
     return globals()["player" + str(i)]
 
 
-def number_player ():
+def number_player():
     """
     :return: Number of player in the db.json
     """
@@ -269,7 +267,7 @@ def number_player ():
 # Tournament functions
 
 
-def number_tournament ():
+def number_tournament():
     """
     :return: Number of tournament in the db.json
     """
@@ -278,10 +276,10 @@ def number_tournament ():
     return len(tournament_table)
 
 
-def view_tournament ():
+def view_tournament():
     """
     function to view all tournament
-    :return: str with all tournament
+    :return: str with all tournament (id and name)
     """
     tournament_deserialize()
     db = TinyDB("db.json")
@@ -290,11 +288,10 @@ def view_tournament ():
         print("tournoi {} : {}".format(i + 1, globals()["tournament" + str(i + 1)]))
 
 
-def new_round (i):
+def new_round(i):
     """
     function to create a new round and 4 new match
     :param i: indice of the tournament in the db.json
-    :return:
     """
     tournament_deserialize()
     tournament = globals()["tournament" + str(i)]
@@ -308,7 +305,7 @@ def new_round (i):
         turn = Round(tournament.name, Match(player_list[0], player_list[4]), Match(player_list[1], player_list[5]),
                      Match(player_list[2], player_list[6]), Match(player_list[3], player_list[7]))
         turn.date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-        turn.number = id_round + 1
+        turn.number = 1
         round_add(turn)
         tournament.rounds.append(turn)
         tournament_serialize(tournament)
@@ -339,11 +336,9 @@ def new_round (i):
         round_add(turn)
         tournament.rounds.append(turn)
         tournament_serialize(tournament)
-    else:
-        print("erreur")
 
 
-def continue_tournament (i):
+def continue_tournament(i):
     """
     check if the active round is finish.
     if the active round is finish create a new round
@@ -369,7 +364,7 @@ def continue_tournament (i):
     return res
 
 
-def resolve_match (i, j, k):
+def resolve_match(i, j, k):
     """
     to resolve a match and add score of players
     :param i: tournament id
@@ -382,13 +377,13 @@ def resolve_match (i, j, k):
     turn = tournament.rounds[-1]  # active round
     j = int(j) - 1
     k = int(k)
-    turn.match_list()[j].resolve(k)
-    turn.match_list()[j].date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    turn.match_list()[j].resolve(k)  # resolve the match
+    turn.match_list()[j].date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")  # add date of the end
     res = "le joueur " + str(turn.match_list()[j].first_player) + \
           " gagne " + str(turn.match_list()[j].first_player_score) + "points. \n" + \
           "le joueur " + str(turn.match_list()[j].second_player) + \
           " gagne " + str(turn.match_list()[j].second_player_score) + "points. \n"
-    for indice, item in enumerate(turn.match_list()):
+    for indice, item in enumerate(turn.match_list()):  # check if the round is finished
         if not item.resolved:
             break
         else:
@@ -397,7 +392,7 @@ def resolve_match (i, j, k):
                 tournament.update_score()
                 turn.end_date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 res += "Ce tour est fini \n"
-                if tournament.nb_round == tournament.active_round():
+                if tournament.nb_round == tournament.active_round():  # check if the tournament is finished
                     tournament.finish = True
                     tournament.end_date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                     res += "Fin du tournoi"
@@ -408,24 +403,31 @@ def resolve_match (i, j, k):
 # reports
 
 
-def player_report (alphabetical=False):
+def player_report(alphabetical=False):
+    """
+    :param alphabetical: False for ranking order, True for alphabetical order
+    :return: str with all players and informations
+    """
     res = ""
     player_deserialize()
     player_list = []
-    for i in range(number_player()):
+    for i in range(number_player()):  # add players object in the list
         player_list.append(call_player(i + 1))
     if alphabetical:
-        player_list.sort(key=lambda m: m.last_name)
+        player_list.sort(key=lambda m: m.last_name)  # sort by name
         for item in player_list:
             res += item.report() + "\n"
     else:
-        player_list.sort()
+        player_list.sort()  # sort by ranking
         for item in player_list:
             res += item.report() + "\n"
     return res
 
 
-def tournament_report ():
+def tournament_report():
+    """
+    :return: str with all tournaments and informations
+    """
     res = ""
     tournament_deserialize()
     for i in range(number_tournament()):
@@ -433,24 +435,34 @@ def tournament_report ():
     return res
 
 
-def player_tournament_report (i, j):
+def player_tournament_report(i, j):
+    """
+    :param i: tournament id
+    :param j: 1 for sort by ranking, 2 for sort in alphabetical order, 3 for sort by score
+    :return: str with all players of a tournament
+    """
     res = ""
     i = int(i)
     tournament_deserialize()
     tournament = globals()["tournament" + str(i)]
     player_list = list(tournament.players)
     if j == "1":
-        player_list.sort(key=lambda m: m[0])
+        player_list.sort(key=lambda m: m[0])  # sort by rank
     elif j == "2":
-        player_list.sort(key=lambda m: m[0].last_name)
+        player_list.sort(key=lambda m: m[0].last_name)  # sort in alphabetical order
     elif j == "3":
-        player_list.sort(reverse=True, key=lambda m: m[1])
+        player_list.sort(reverse=True, key=lambda m: m[1])  # sort by score
     for item in player_list:
         res += item[0].report() + ", score: " + str(item[1]) + "\n"
     return res
 
 
-def round_tournament_report (i, j):
+def round_tournament_report(i, j):
+    """
+    :param i: tournament id
+    :param j: 1 for round report, 2 for match report
+    :return: str with all round's informations or all match's informations
+    """
     res = ""
     i = int(i)
     tournament_deserialize()
@@ -473,26 +485,42 @@ def round_tournament_report (i, j):
     return res
 
 
-def input_exception (min, max, message=""):
-    bo = True
+# Exceptions
+
+
+def input_exception(mini, maxi, message=""):
+    """
+    Ask an input and check if an input is an int object > mini and < maxi
+    :param mini: minimum
+    :param maxi: maximum
+    :param message: message of the input
+    :return: correct input
+    """
+    bo = True  # boolean = False when the input is correct
     while bo:
         try:
             reponse = input(message)
-            assert min <= int(reponse) <= max
+            assert mini <= int(reponse) <= maxi
             bo = False
         except AssertionError:
-            print("Vous devez saisir un nombre entre {} et {} :".format(min, max))
+            print("Vous devez saisir un nombre entre {} et {} :".format(mini, maxi))
         except ValueError:
             print("Vous devez saisir un nombre")
     return reponse
 
 
-def input_match_exception (i, message=""):
+def input_match_exception(i, message=""):
+    """
+    Ask an input and check if an input is an int object > 0 and < 4 and if the correspondant match is already solved
+    :param i:
+    :param message:
+    :return: correct input
+    """
     i = int(i)
     tournament_deserialize()
     tournament = globals()["tournament" + str(i)]
     turn = tournament.rounds[-1]
-    bo = True
+    bo = True  # boolean = False when the input is correct
     while bo:
         try:
             reponse = input(message)
@@ -507,9 +535,14 @@ def input_match_exception (i, message=""):
     return reponse
 
 
-def input_tournament_exception (message=""):
+def input_tournament_exception(message=""):
+    """
+    Ask an input and check if an input is corresponding to id of a tournament not finish
+    :param message: message of the input
+    :return:
+    """
     tournament_deserialize()
-    bo = True
+    bo = True  # boolean = False when the input is correct
     while bo:
         try:
             reponse = input(message)
