@@ -2,12 +2,11 @@
 # coding: utf-8
 
 import sys
-
-sys.path.append("../model")
-
 from tinydb import TinyDB, Query
 from models import Player, Tournament, Round, Match
 from datetime import datetime
+
+sys.path.append("../model")
 
 
 # Conversion between data base and models
@@ -548,6 +547,7 @@ def input_tournament_exception(message=""):
     """
     tournament_deserialize()
     bo = True  # boolean = False when the input is correct
+    reponse = ""
     while bo:
         try:
             reponse = input(message)

@@ -40,3 +40,5 @@ python3 main.py
 
 ## Fonctionnement
 
+flake8 --format=html --htmldir=flake-report --max-line-length=119 --exclude ./env
+
