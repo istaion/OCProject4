@@ -1,9 +1,10 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-import sys
-sys.path.extend(["../controller"])
-from functions import *
+from controller.functions import input_exception, view_player, add_player, number_player, change_player,\
+    change_ranking, add_tournament, view_tournament, input_tournament_exception, continue_tournament,\
+    input_match_exception, resolve_match, player_report, tournament_report, number_tournament,\
+    player_tournament_report, round_tournament_report
 
 
 def menu():
@@ -132,7 +133,7 @@ def report_menu():
         print(view_tournament())
         i = input_exception(1, number_tournament(), "De quel tournoi voulez vous voir les joueurs ? ")
         print("1: par classement ?")
-        print("2: par ordre alphébétique ?")
+        print("2: par ordre alphabétique ?")
         print("3: par score dans le tournoi ?")
         j = input_exception(1, 3)
         print(player_tournament_report(i, j))  # i : indice of the tournament, j : order, 1 for ranking,

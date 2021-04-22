@@ -40,3 +40,26 @@ python3 main.py
 
 ## Fonctionnement
 
+Les informations obtenues lors de l'execution du programme sont stockés dans un fichier db.json à la racine du fichier.
+
+### menu joueur
+
+Permet d'ajouter de nouveaux joueurs, changer les classements et de modifier les informations d'un joueur.
+
+### menu tournoi
+
+Permet de créer un tournoi et de continuer un tournoi.
+
+### menu rapport
+
+Permet d'afficher sur la console les différents rapports
+
+### Flake8
+
+Pour réaliser un rapport flake8-html exécuter dans la console :
+
+```bash
+flake8 --format=html --htmldir=flake-report --max-line-length=119 --exclude ./env
+```
+
+Vous devez éventuellement changer env par le nom que vous avez donné à votre environment virtuel

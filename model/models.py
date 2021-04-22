@@ -19,7 +19,7 @@ class Player:
         :return: str with all player's information
         """
         return self.last_name + " " + self.first_name + ", classement: " + str(self.ranking) +\
-               ", date de naissance: " + self.birth_date + ", genre: " + self.gender
+            ", date de naissance: " + self.birth_date + ", genre: " + self.gender
 
     def __lt__(self, other):
         if self.ranking < other.ranking:
@@ -77,13 +77,14 @@ class Tournament:
         :return: str with all tournament informations (except players and matchs)
         """
         if self.finish:
-            return "tournoi: " + self.name + ", status: fini, date de début: " + self.date +\
-            ", date de fin: " + self.end_date + ", lieu: " + self.place + ", contrôle du temps: " + self.time_control +\
-            ", nombre de round: " + str(self.nb_round) + "\n" + "         description: " + self.descritpion + "\n"
+            return "tournoi: " + self.name + ", status: fini, date de début: " + self.date\
+                   + ", date de fin: " + self.end_date + ", lieu: " + self.place\
+                   + ", contrôle du temps: " + self.time_control + ", nombre de round: " + str(self.nb_round) \
+                   + "\n" + "         description: " + self.descritpion + "\n"
         else:
             return "tournoi: " + self.name + ", status: en cours, date de début: " + self.date +\
-            ", lieu: " + self.place + ", contrôle du temps: " + self.time_control +\
-            ", nombre de round: " + str(self.nb_round) + "\n" + "         description: " + self.descritpion + "\n"
+                   ", lieu: " + self.place + ", contrôle du temps: " + self.time_control +\
+                   ", nombre de round: " + str(self.nb_round) + "\n" + "\t description: " + self.descritpion + "\n"
 
     def active_round(self):
         """
@@ -104,7 +105,7 @@ class Tournament:
     def __repr__(self):
         return self.name
 
-    def new_round (self, new):
+    def new_round(self, new):
         """
         add a round in the round list
         :param new: round to add
@@ -132,11 +133,15 @@ class Round:
 
     def report(self):
         if self.status:
-            return "tour" + str(self.number) + ": " + str(self) + ", date de début: " + \
-                   self.date + ", date de fin: " + self.end_date + "\n"
+            return "tour" + str(self.number) + ": " + ", date de début: " + \
+                   self.date + ", date de fin: " + self.end_date + "\n \t match1 : " + str(self.match1) +\
+                   "\n \t match2 : " + str(self.match2) + "\n \t match3 : " +\
+                   str(self.match3) + "\n \t match4 : " + str(self.match4) + "\n"
         else:
             return "tour" + str(self.number) + ": " + str(self) + ", date de début: " + \
-                   self.date + ", ce match n'est pas fini." + "\n"
+                   self.date + ", ce match n'est pas fini." + "\n \t match1 : " + str(self.match1) +\
+                   "\n \t match2 : " + str(self.match2) + "\n \t match3 : " +\
+                   str(self.match3) + "\n \t match4 : " + str(self.match4) + "\n"
 
     def opponent(self, player1, player2):
         """
@@ -175,12 +180,13 @@ class Round:
 
 class Match:
 
-    def __init__(self, first_player, second_player, first_player_score=0, second_player_score=0, resolved=False):
+    def __init__(self, first_player, second_player, first_player_score=0, second_player_score=0,
+                 resolved="in progress"):
         self.first_player = first_player  # Player object
         self.first_player_score = first_player_score  # int
         self.second_player = second_player
         self.second_player_score = second_player_score
-        self.resolved = resolved  # False, first_win, second_win, ex_aequo
+        self.resolved = resolved  # in progress, first_win, second_win, ex_aequo
         self.date = " "
 
     def __repr__(self):
