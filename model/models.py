@@ -84,7 +84,7 @@ class Tournament:
         else:
             return "tournoi: " + self.name + ", status: en cours, date de début: " + self.date +\
                    ", lieu: " + self.place + ", contrôle du temps: " + self.time_control +\
-                   ", nombre de round: " + str(self.nb_round) + "\n" + "       description: " + self.descritpion + "\n"
+                   ", nombre de round: " + str(self.nb_round) + "\n" + "\t description: " + self.descritpion + "\n"
 
     def active_round(self):
         """
@@ -133,11 +133,15 @@ class Round:
 
     def report(self):
         if self.status:
-            return "tour" + str(self.number) + ": " + str(self) + ", date de début: " + \
-                   self.date + ", date de fin: " + self.end_date + "\n"
+            return "tour" + str(self.number) + ": " + ", date de début: " + \
+                   self.date + ", date de fin: " + self.end_date + "\n \t match1 : " + str(self.match1) +\
+                   "\n \t match2 : " + str(self.match2) + "\n \t match3 : " +\
+                   str(self.match3) + "\n \t match4 : " + str(self.match4) + "\n"
         else:
             return "tour" + str(self.number) + ": " + str(self) + ", date de début: " + \
-                   self.date + ", ce match n'est pas fini." + "\n"
+                   self.date + ", ce match n'est pas fini." + "\n \t match1 : " + str(self.match1) +\
+                   "\n \t match2 : " + str(self.match2) + "\n \t match3 : " +\
+                   str(self.match3) + "\n \t match4 : " + str(self.match4) + "\n"
 
     def opponent(self, player1, player2):
         """
