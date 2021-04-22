@@ -40,5 +40,26 @@ python3 main.py
 
 ## Fonctionnement
 
-flake8 --format=html --htmldir=flake-report --max-line-length=119 --exclude ./env
+Les informations obtenues lors de l'execution du programme sont stockés dans un fichier db.json à la racine du fichier.
 
+### menu joueur
+
+Permet d'ajouter de nouveaux joueurs, changer les classements et de modifier les informations d'un joueur.
+
+### menu tournoi
+
+Permet de créer un tournoi et de continuer un tournoi.
+
+### menu rapport
+
+Permet d'afficher sur la console les différent rapports
+
+### Flake8
+
+Pour réaliser un rapport flake8-html executer dans la console :
+
+```bash
+flake8 --format=html --htmldir=flake-report --max-line-length=119 --exclude ./env
+```
+
+Vous devez éventuelement changer env par le nom que vous avez donner à votre environement virtuel
