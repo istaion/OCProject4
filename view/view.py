@@ -1,12 +1,10 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-import sys
-from functions import input_exception, view_player, add_player, number_player, change_player, change_ranking,\
-    add_tournament, view_tournament, input_tournament_exception, continue_tournament, input_match_exception,\
-    resolve_match, player_report, tournament_report, number_tournament, player_tournament_report,\
-    round_tournament_report
-sys.path.extend(["../controller"])
+from controller.functions import input_exception, view_player, add_player, number_player, change_player,\
+    change_ranking, add_tournament, view_tournament, input_tournament_exception, continue_tournament,\
+    input_match_exception, resolve_match, player_report, tournament_report, number_tournament,\
+    player_tournament_report, round_tournament_report
 
 
 def menu():

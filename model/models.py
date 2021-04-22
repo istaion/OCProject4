@@ -176,12 +176,13 @@ class Round:
 
 class Match:
 
-    def __init__(self, first_player, second_player, first_player_score=0, second_player_score=0, resolved=False):
+    def __init__(self, first_player, second_player, first_player_score=0, second_player_score=0,
+                 resolved="in progress"):
         self.first_player = first_player  # Player object
         self.first_player_score = first_player_score  # int
         self.second_player = second_player
         self.second_player_score = second_player_score
-        self.resolved = resolved  # False, first_win, second_win, ex_aequo
+        self.resolved = resolved  # in progress, first_win, second_win, ex_aequo
         self.date = " "
 
     def __repr__(self):

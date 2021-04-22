@@ -1,13 +1,9 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-import sys
 from tinydb import TinyDB, Query
-from models import Player, Tournament, Round, Match
 from datetime import datetime
-
-sys.path.append("../model")
-
+from model.models import Player, Tournament, Round, Match
 
 # Conversion between data base and models
 
@@ -151,16 +147,16 @@ def round_add(turn):
     round_table.insert({"tournament": turn.tournament, "number": turn.number,
                         "match1": [(turn.match1.first_player.id_json, turn.match1.first_player_score),
                                    (turn.match1.second_player.id_json, turn.match1.second_player_score),
-                                   False, " "],
+                                   "in progress", " "],
                         "match2": [(turn.match2.first_player.id_json, turn.match2.first_player_score),
                                    (turn.match2.second_player.id_json, turn.match2.second_player_score),
-                                   False, " "],
+                                   "in progress", " "],
                         "match3": [(turn.match3.first_player.id_json, turn.match3.first_player_score),
                                    (turn.match3.second_player.id_json, turn.match3.second_player_score),
-                                   False, " "],
+                                   "in progress", " "],
                         "match4": [(turn.match4.first_player.id_json, turn.match4.first_player_score),
                                    (turn.match4.second_player.id_json, turn.match4.second_player_score),
-                                   False, " "],
+                                   "in progress", " "],
                         "date": turn.date, "end_date": turn.end_date,
                         "status": False
                         })
@@ -388,7 +384,7 @@ def resolve_match(i, j, k):
           "le joueur " + str(turn.match_list()[j].second_player) + \
           " gagne " + str(turn.match_list()[j].second_player_score) + "points. \n"
     for indice, item in enumerate(turn.match_list()):  # check if the round is finished
-        if not item.resolved:
+        if item.resolved == "in progress":
             break
         else:
             if indice == 3:
@@ -479,7 +475,7 @@ def round_tournament_report(i, j):
             res += "tour" + str(item.number) + ", " + ", date de début: " + item.date + "\n"
             n = 1
             for match in item.match_list():
-                if not match.resolved:
+                if match.resolved == "in progress":
                     res += "     match" + str(n) + ": " + str(match) + ", status: non résolu" + "\n"
                     n += 1
                 else:
@@ -530,7 +526,7 @@ def input_match_exception(i, message=""):
             reponse = input(message)
             reponse = int(reponse)
             assert 1 <= reponse <= 4
-            assert False == turn.match_list()[reponse - 1].resolved
+            assert turn.match_list()[reponse - 1].resolved == "in progress"
             bo = False
         except AssertionError:
             print("Vous devez saisir un nombre entre 1 et 4 et le match correspondant ne doit pas avoir été résolu")
@@ -552,7 +548,7 @@ def input_tournament_exception(message=""):
         try:
             reponse = input(message)
             assert 1 <= int(reponse) <= number_tournament()
-            assert globals()["tournament" + str(reponse)].finish == False
+            assert not globals()["tournament" + str(reponse)].finish
             bo = False
         except AssertionError:
             print("Ce tournoi est déja fini ou n'existe pas.")
