@@ -102,7 +102,7 @@ def tournament_menu():
         if active_tournament():
             print(view_tournament(True))
             i = input_tournament_exception("Quel tournoi voulez vous continuer ? ")
-            print(continue_tournament(i))  # eventually create a new round and print list of match
+            print(continue_tournament(i))  # if needed create a new round then print list of matches
             j = input_match_exception(i, "Saisissez le numéro du match à résoudre :")
             k = input_exception(1, 3, "Qui à gagné ? Taper 1 pour le premier joueur,"
                                       " 2 pour le deuxième, 3 pour ex aequo : ")
@@ -142,7 +142,7 @@ def report_menu():
         print("2: par ordre alphabétique ?")
         print("3: par score dans le tournoi ?")
         j = input_exception(1, 3)
-        print(player_tournament_report(i, j))  # i : indice of the tournament, j : order, 1 for ranking,
+        print(player_tournament_report(i, j))  # i : id of the tournament, j : order, 1 for ranking,
         # 2 for alphabetical, 3 for score
         report_menu()
     elif reponse == "4":
@@ -152,7 +152,7 @@ def report_menu():
         print("1: des tours ?")
         print("2: des matchs ?")
         j = input_exception(1, 2)
-        print(round_tournament_report(i, j))  # i : indice of the tournament, j : 1 for round, 2 for match
+        print(round_tournament_report(i, j))  # i : id of the tournament, j : 1 for round, 2 for match
         report_menu()
     elif reponse == "5":
         menu()

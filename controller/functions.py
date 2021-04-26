@@ -10,7 +10,7 @@ from model.models import Player, Tournament, Round, Match
 
 def player_deserialize():
     """
-    Function to put all players of the db.table in globals variables
+    Function to put all players of the db.table in global variables
     """
     db = TinyDB("db.json")
     players_table = db.table("players")
@@ -32,14 +32,14 @@ def player_serialize(player):
 
 def tournament_deserialize():
     """
-    Function to put all tournaments of the db.table in globals variables
+    Function to put all tournaments of the db.table in global variables
     """
     player_deserialize()
     db = TinyDB("db.json")
     tournament_table = db.table("tournaments")
     for item in tournament_table:
         players = []
-        for player in item["players"]:  # to convert id's player in player object
+        for player in item["players"]:  # to convert player id in player object
             players.append((call_player(player[0]), player[1]))
         globals()["tournament" + str(item.doc_id)] = Tournament(item["name"], item["place"], item["date"], players,
                                                                 item["time_control"], item["description"],
@@ -57,7 +57,7 @@ def tournament_serialize(tournament):
     :param tournament: tournament to update
     """
     players = []
-    for item in tournament.players:  # to convert player object in id
+    for item in tournament.players:  # to convert player object to id
         players.append([item[0].id_json, item[1]])
     db = TinyDB("db.json")
     tournament_table = db.table("tournaments")
@@ -73,8 +73,8 @@ def tournament_serialize(tournament):
 
 def round_deserialize(tournament):
     """
-    Function to put all round and matchs of a tournament in variables
-    :param tournament: tournament to retrieve rounds
+    Function to turn all rounds and matches of a tournament into variables
+    :param tournament: tournament from which rounds are taken
     """
     player_deserialize()
     db = TinyDB("db.json")
@@ -112,7 +112,7 @@ def round_deserialize(tournament):
 def round_serialize(tournament):
     """
     Function to update rounds in the db.json
-    :param tournament: tournament to retrieve rounds
+    :param tournament: tournament from which rounds are taken
     """
     player_deserialize()
     db = TinyDB("db.json")
@@ -190,13 +190,13 @@ def add_tournament(name, place, players, time_control, description, nb_round):
          "finish": False})
 
 
-# Players functions
+# Player functions
 
 
 def change_player(i, last_name, first_name, date, gender):
     """
     function to change player's information
-    :param i: id of the player in the db.table
+    :param i: player id in the db.table
     :param gender: str
     :param date: birth date, str
     :param first_name: str
@@ -244,7 +244,7 @@ def view_player():
 
 def call_player(i):
     """
-    :param i: place of the player in the db.json
+    :param i: player id in the db.json
     :return: Player object
     """
     return globals()["player" + str(i)]
@@ -273,8 +273,8 @@ def number_tournament():
 
 def view_tournament(active=False):
     """
-    function to view all tournament or just actives tournaments
-    :return: str with all tournament (id and name) or just active tournaments if active is True
+    function to view all tournaments or just active tournaments
+    :return: str with all tournaments (id and name) or just active tournaments if active is True
     """
     tournament_deserialize()
     db = TinyDB("db.json")
@@ -306,13 +306,13 @@ def active_tournament():
 
 def new_round(i):
     """
-    function to create a new round and 4 new match
-    :param i: indice of the tournament in the db.json
+    function to create a new round and 4 new matches
+    :param i: id of the tournament in the db.json
     """
     tournament_deserialize()
     tournament = globals()["tournament" + str(i)]
     player_deserialize()
-    id_round = tournament.active_round()  # place of the last round (0 if there is not round)
+    id_round = tournament.active_round()  # place of the last round (0 if there is no round)
     if id_round == 0:  # to create the first round
         player_list = []  # list of players in the tournament
         for player in tournament.players:
@@ -329,24 +329,24 @@ def new_round(i):
         player_list = list(tournament.players)
         player_list.sort(key=lambda m: m[0])  # sort by ranking
         player_list.sort(reverse=True, key=lambda m: m[1])  # sort by score
-        match = [[], [], [], []]  # list wish contain 4 matchs
-        for n in range(4):  # take the first of the list, next take the second who haven't played against.
+        match = [[], [], [], []]  # list wish contain 4 matches
+        for n in range(4):  # take the first of the list and take the next one they haven't played against.
             match[n].append(player_list[0][0])
             stop = False
             for j in range(len(player_list) - 1):
-                if j == len(player_list) - 2:  # in case the player have already played against all remaining players
-                    match[n].append(player_list[j + 1][0])  # store this players
+                if j == len(player_list) - 2:  # in case the player has already played against all remaining players
+                    match[n].append(player_list[j + 1][0])  # store this player
                     player_list.pop(j + 1)
-                    player_list.pop(0)  # suppress of the list for restart
+                    player_list.pop(0)  # delete from the list for restart
                     break
                 for i, turn in enumerate(tournament.rounds):
                     if turn.opponent(player_list[0][0], player_list[j + 1][0]):  # control if they have played
                         break
                     elif i != id_round - 1:
                         continue
-                    match[n].append(player_list[j + 1][0])  # store this players
+                    match[n].append(player_list[j + 1][0])  # store this player
                     player_list.pop(j + 1)
-                    player_list.pop(0)  # suppress of the list for restart
+                    player_list.pop(0)  # delete from the list for restart
                     stop = True
                 if stop:
                     break
@@ -361,10 +361,10 @@ def new_round(i):
 
 def continue_tournament(i):
     """
-    check if the active round is finish.
-    if the active round is finish create a new round
+    check if the active round is finished.
+    if the active round is finished create a new round
     :param i: tournament id
-    :return: str with the list of match to select the match to resolve
+    :return: str with the list of matches to select the matches to resolve
     """
     tournament_deserialize()
     tournament = globals()["tournament" + str(i)]
@@ -395,11 +395,11 @@ def resolve_match(i, j, k):
     """
     tournament_deserialize()
     tournament = globals()["tournament" + str(i)]
-    turn = tournament.rounds[-1]  # active round
+    turn = tournament.rounds[-1]  # current round
     j = int(j) - 1
     k = int(k)
     turn.match_list()[j].resolve(k)  # resolve the match
-    turn.match_list()[j].date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")  # add date of the end
+    turn.match_list()[j].date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")  # add time and date of the end
     res = "le joueur " + str(turn.match_list()[j].first_player) + \
           " gagne " + str(turn.match_list()[j].first_player_score) + "points. \n" + \
           "le joueur " + str(turn.match_list()[j].second_player) + \
@@ -427,7 +427,7 @@ def resolve_match(i, j, k):
 def player_report(alphabetical=False):
     """
     :param alphabetical: False for ranking order, True for alphabetical order
-    :return: str with all players and informations
+    :return: str with all players and information
     """
     res = ""
     player_deserialize()
@@ -447,7 +447,7 @@ def player_report(alphabetical=False):
 
 def tournament_report():
     """
-    :return: str with all tournaments and informations
+    :return: str with all tournaments and information
     """
     res = ""
     tournament_deserialize()
@@ -459,7 +459,7 @@ def tournament_report():
 def player_tournament_report(i, j):
     """
     :param i: tournament id
-    :param j: 1 for sort by ranking, 2 for sort in alphabetical order, 3 for sort by score
+    :param j: 1 to sort by ranking, 2 to sort in alphabetical order, 3 to sort by score
     :return: str with all players of a tournament
     """
     res = ""
@@ -482,7 +482,7 @@ def round_tournament_report(i, j):
     """
     :param i: tournament id
     :param j: 1 for round report, 2 for match report
-    :return: str with all round's informations or all match's informations
+    :return: str with all round information or all matches informations
     """
     res = ""
     i = int(i)
@@ -532,7 +532,7 @@ def input_exception(mini, maxi, message=""):
 
 def input_match_exception(i, message=""):
     """
-    Ask an input and check if an input is an int object > 0 and < 4 and if the correspondant match is already solved
+    Ask an input and check if an input is an int object > 0 and < 4 and if the corresponding match is already solved
     :param i:
     :param message:
     :return: correct input
@@ -558,7 +558,7 @@ def input_match_exception(i, message=""):
 
 def input_tournament_exception(message=""):
     """
-    Ask an input and check if an input is corresponding to id of a tournament not finish
+    Ask an input and check if an input is corresponding to id of a not finished tournament
     :param message: message of the input
     :return:
     """
