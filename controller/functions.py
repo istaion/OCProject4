@@ -271,16 +271,37 @@ def number_tournament():
     return len(tournament_table)
 
 
-def view_tournament():
+def view_tournament(active=False):
     """
-    function to view all tournament
-    :return: str with all tournament (id and name)
+    function to view all tournament or just actives tournaments
+    :return: str with all tournament (id and name) or just active tournaments if active is True
     """
     tournament_deserialize()
     db = TinyDB("db.json")
     tournament_table = db.table("tournaments")
+    res = ""
     for i in range(len(tournament_table)):
-        print("tournoi {} : {}".format(i + 1, globals()["tournament" + str(i + 1)]))
+        if active:
+            if not globals()["tournament" + str(i + 1)].finish:
+                res += "tournoi " + str(i + 1) + " : " + str(globals()["tournament" + str(i + 1)]) + "\n"
+        else:
+            res += "tournoi " + str(i + 1) + " : " + str(globals()["tournament" + str(i + 1)]) + "\n"
+    return res
+
+
+def active_tournament():
+    """
+    check if there is an active tournament.
+    :return: If all tournaments are finished : False, else : True.
+    """
+    res = False
+    tournament_deserialize()
+    db = TinyDB("db.json")
+    tournament_table = db.table("tournaments")
+    for i in range(len(tournament_table)):
+        if not globals()["tournament" + str(i + 1)].finish:
+            res = True
+    return res
 
 
 def new_round(i):

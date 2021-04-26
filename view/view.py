@@ -4,7 +4,7 @@
 from controller.functions import input_exception, view_player, add_player, number_player, change_player,\
     change_ranking, add_tournament, view_tournament, input_tournament_exception, continue_tournament,\
     input_match_exception, resolve_match, player_report, tournament_report, number_tournament,\
-    player_tournament_report, round_tournament_report
+    player_tournament_report, round_tournament_report, active_tournament
 
 
 def menu():
@@ -19,6 +19,8 @@ def menu():
         tournament_menu()
     elif reponse == "3":
         report_menu()
+    elif reponse == "4":
+        exit()
 
 
 def player_menu():
@@ -71,7 +73,7 @@ def tournament_menu():
     if reponse == "1":
         name = input("nom du nouveau tournoi ? ")
         place = input("lieu du nouveau tournoi ? ")
-        print("selectionner les 8 joueurs qui participeront à ce tournoi :")
+        print("sélectionner les 8 joueurs qui participeront à ce tournoi :")
         print(view_player())
         new_players = []
         for i in range(8):
@@ -97,14 +99,18 @@ def tournament_menu():
         add_tournament(name, place, players, time_control, description, nb_round)  # add tournament in the db.json
         tournament_menu()
     elif reponse == "2":
-        print(view_tournament())
-        i = input_tournament_exception("Quel tournoi voulez vous continuer ? ")
-        print(continue_tournament(i))  # eventually create a new round and print list of match
-        j = input_match_exception(i, "Saisissez le numéro du match à résoudre :")
-        k = input_exception(1, 3, "Qui à gagné ? Taper 1 pour le premier joueur,"
-                                  " 2 pour le deuxième, 3 pour ex aequo : ")
-        print(resolve_match(i, j, k))
-        tournament_menu()
+        if active_tournament():
+            print(view_tournament(True))
+            i = input_tournament_exception("Quel tournoi voulez vous continuer ? ")
+            print(continue_tournament(i))  # eventually create a new round and print list of match
+            j = input_match_exception(i, "Saisissez le numéro du match à résoudre :")
+            k = input_exception(1, 3, "Qui à gagné ? Taper 1 pour le premier joueur,"
+                                      " 2 pour le deuxième, 3 pour ex aequo : ")
+            print(resolve_match(i, j, k))
+            tournament_menu()
+        else:
+            print("Il n'y a pas de tournoi en cours, veuillez créer un nouveau tournoi.")
+            tournament_menu()
     elif reponse == "3":
         menu()
 
