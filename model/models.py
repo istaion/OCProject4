@@ -74,7 +74,7 @@ class Tournament:
 
     def report(self):
         """
-        :return: str with all tournament informations (except players and matchs)
+        :return: str with all tournament information (except players and matches)
         """
         if self.finish:
             return "tournoi: " + self.name + ", status: fini, date de début: " + self.date\
@@ -88,13 +88,13 @@ class Tournament:
 
     def active_round(self):
         """
-        :return: number of actual round
+        :return: number of current round
         """
         return len(self.rounds)
 
     def update_score(self):
         """
-        ad score of the actual round to players list
+        add score of the current round to players list
         """
         new_list = []
         turn = self.rounds[-1]
@@ -117,9 +117,9 @@ class Tournament:
 class Round:
 
     def __init__(self, tournament, match1, match2, match3, match4, status=False):
-        self.tournament = tournament  # str, name of the tournament's round
+        self.tournament = tournament  # str, tournament name
         self.number = 0  # number of this round
-        self.match1 = match1  # Match objet
+        self.match1 = match1  # Match object
         self.match2 = match2
         self.match3 = match3
         self.match4 = match4
@@ -145,7 +145,7 @@ class Round:
 
     def opponent(self, player1, player2):
         """
-        controll if 2 players have already played against each other
+        control if 2 players have already played against each other
         :param player1: Player object
         :param player2: Player object
         :return: if they already played : True, else : False
@@ -173,7 +173,7 @@ class Round:
 
     def match_list(self):
         """
-        :return: a list with all match
+        :return: a list with all matches
         """
         return [self.match1, self.match2, self.match3, self.match4]
 
