@@ -71,33 +71,37 @@ def tournament_menu():
     print("3: Retourner au menu principal")
     reponse = input_exception(1, 3)
     if reponse == "1":
-        name = input("nom du nouveau tournoi ? ")
-        place = input("lieu du nouveau tournoi ? ")
-        print("sélectionner les 8 joueurs qui participeront à ce tournoi :")
-        print(view_player())
-        new_players = []
-        for i in range(8):
-            bo = True  # boolean = False when the input is correct
-            while bo:  # check if the input match with a player who has not already been selected
-                try:
-                    new = int(input("numéro du joueur :"))
-                    assert new not in new_players
-                    assert 0 <= new <= number_player()
-                    new_players.append(new)
-                    bo = False
-                except AssertionError:
-                    print("Ce joueur a déja été seléctionné ou n'existe pas.")
-                except ValueError:
-                    print("Vous devez saisir un nombre")
-        players = []
-        for item in new_players:
-            players.append([item, 0])
-        nb_round = int(input_exception(1, 7, "Nombre de tour du nouveau tournoi ? "))
-        time_control = input_exception(1, 3, "Contrôleur de temps ? Tapez 1 pour bullet,"
-                                             " 2 pour blitz ou 3 pour coup rapide. ")
-        description = input("Description du nouveau tournoi ? ")
-        add_tournament(name, place, players, time_control, description, nb_round)  # add tournament in the db.json
-        tournament_menu()
+        if number_player() < 8:
+            print("il faut au moins 8 joueurs pour créer un tournoi.")
+            tournament_menu()
+        else:
+            name = input("nom du nouveau tournoi ? ")
+            place = input("lieu du nouveau tournoi ? ")
+            print("sélectionner les 8 joueurs qui participeront à ce tournoi :")
+            print(view_player())
+            new_players = []
+            for i in range(8):
+                bo = True  # boolean = False when the input is correct
+                while bo:  # check if the input match with a player who has not already been selected
+                    try:
+                        new = int(input("numéro du joueur :"))
+                        assert new not in new_players
+                        assert 0 <= new <= number_player()
+                        new_players.append(new)
+                        bo = False
+                    except AssertionError:
+                        print("Ce joueur a déja été seléctionné ou n'existe pas.")
+                    except ValueError:
+                        print("Vous devez saisir un nombre")
+            players = []
+            for item in new_players:
+                players.append([item, 0])
+            nb_round = int(input_exception(1, 7, "Nombre de tour du nouveau tournoi ? "))
+            time_control = input_exception(1, 3, "Contrôleur de temps ? Tapez 1 pour bullet,"
+                                                 " 2 pour blitz ou 3 pour coup rapide. ")
+            description = input("Description du nouveau tournoi ? ")
+            add_tournament(name, place, players, time_control, description, nb_round)  # add tournament in the db.json
+            tournament_menu()
     elif reponse == "2":
         if active_tournament():
             print(view_tournament(True))
