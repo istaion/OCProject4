@@ -29,7 +29,7 @@ env\\Scripts\\activate.bat
 ### Installer les packages :
 
 ```bash
-pip install -r requierements.txt
+pip install -r requirements.txt
 ```
 
 ### Executer le programme :
